@@ -10,12 +10,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Book Maker',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Book Maker'),
     );
   }
 }
@@ -32,6 +32,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+          title: Center(
+        child: Row(
+          children: [
+            Icon(Icons.menu),
+            Row(children: [Icon(Icons.import_contacts),Text('  '),Text(widget.title)]),
+            Icon(Icons.insert_emoticon)
+          ],
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+      )),
+      body: Text("data"),
+    );
   }
 }
