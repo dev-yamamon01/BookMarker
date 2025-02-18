@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,9 +38,21 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Center(
         child: Row(
           children: [
-            Icon(Icons.menu),
-            Row(children: [Icon(Icons.import_contacts),Text('  '),Text(widget.title)]),
-            Icon(Icons.insert_emoticon)
+            // IconButton(onPressed: (){}, icon: Icons.menu,color: Color(0xFFCC0000),),
+            IconButton(
+            onPressed: (){},
+              icon:SvgPicture.asset('assets/menu.svg',width: 30,height: 30),
+              ),
+            Row(children: [
+              SvgPicture.asset('assets/bookmark.svg',width: 30,height: 30),
+              Text('  '),
+              Text(widget.title,
+                style: TextStyle(
+                  color: Color(0xFFCC0000)//AARRGGBB形式のHex
+                ),)
+            ]),
+             IconButton(onPressed: (){}, icon: SvgPicture.asset('assets/key.svg',width: 30,height: 30))
+
           ],
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         ),
