@@ -78,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             ),
             bottom: TabBar(
               controller: _tabController, // カスタムコントローラーを指定
+              overlayColor: MaterialStateProperty.all(Colors.transparent), // リップルエフェクトを非表示
               indicator: BoxDecoration(
                 color: Colors.grey.withOpacity(0.1), // 背景色（タブの背景全体に適用）
                 border: Border(
@@ -103,7 +104,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             body: TabBarView(
                 controller: _tabController, // コントローラーを指定
                 children: [
-                  Text("トップ3の内容です"),
+                  CustomListView(items: ["item1","item2","item3"]),
+
                   Text("ジャンル1の内容です"),
                   Text("ジャンル2の内容です"),
                   Text("ジャンル3の内容です"),
@@ -122,3 +124,23 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   }
 
 }
+class CustomListView extends StatelessWidget {
+  final List<String> items;
+  const CustomListView({super.key,required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context,index){
+          return ListTile(
+            leading: Icon(Icons.label), // 共通のアイコン
+            title: Text(items[index], style: TextStyle(fontSize: 18)),
+            subtitle: Text("Item: ${items[index]}"),
+            trailing: Icon(Icons.arrow_forward_ios),
+          );
+        }
+    );
+  }
+}
+
