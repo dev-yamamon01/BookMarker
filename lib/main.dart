@@ -134,10 +134,30 @@ class CustomListView extends StatelessWidget {
         itemCount: items.length,
         itemBuilder: (context,index){
           return ListTile(
-            leading: Icon(Icons.label), // 共通のアイコン
+            leading: Image.network('https://asset.watch.impress.co.jp/img/car/docs/1436/350/001_o.jpg'), // 共通のアイコン
             title: Text(items[index], style: TextStyle(fontSize: 18)),
-            subtitle: Text("Item: ${items[index]}"),
-            trailing: Icon(Icons.arrow_forward_ios),
+            subtitle:
+                Container(child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, // 左揃え
+                  children: [
+                    Text("名前: ${items[index]}の名前"),
+                    Text("評価: 4.5"),
+                    Text("再生数: 15 回"),
+                    Text("コメント: ${items[index]}のコメント"),
+                  ],
+                ), alignment: Alignment.topLeft
+                    ,),
+            trailing:
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Icon(Icons.ac_unit),
+                    Icon(Icons.ac_unit)
+                    // IconButton(onPressed: (){}, icon: Icon(Icons.ac_unit),visualDensity: VisualDensity.compact,),
+                    // IconButton(onPressed: (){}, icon: Icon(Icons.ac_unit),visualDensity: VisualDensity.compact,),
+                  ],
+                )
+
           );
         }
     );
