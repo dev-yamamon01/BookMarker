@@ -31,6 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -48,7 +49,24 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        key: _scaffoldKey,
+        drawer: Drawer( // 🔹 `Drawer` の設定
+          child: ListView(
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Text("Menu", style: TextStyle(color: Colors.white, fontSize: 24)),
+              ),
+              ListTile(
+                leading: Icon(Icons.home),
+                title: Text("Home"),
+                onTap: () {},
+              ),
+            ],
+          ),
+        ),
           appBar: AppBar(
+            automaticallyImplyLeading: false, // デフォルトのハンバーガーメニューを削除
             title: Center(
               child: Row(
                 children: [
@@ -121,6 +139,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   void OnMenu(){
     print("menu-button pressed");
+    _scaffoldKey.currentState?.openDrawer();
   }
 
   void OnSecret(){
