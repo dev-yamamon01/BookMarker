@@ -102,16 +102,20 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             ),
           ),
             body: TabBarView(
-                controller: _tabController, // コントローラーを指定
-                children: [
-                  CustomListView(items: ["item1","item2","item3"]),
-
-                  Text("ジャンル1の内容です"),
-                  Text("ジャンル2の内容です"),
-                  Text("ジャンル3の内容です"),
-                  Text("#3"),
-                ]),
-          ),
+            controller: _tabController, // コントローラーを指定
+            children: [
+              CustomListView(items: ["item-T1", "item-T2", "item-T3"]),
+              CustomListView(items: ["item-J1-1", "item-J1-2", "item-J1-3"]),
+              CustomListView(items: ["item-J2-1", "item-J2-2", "item-J2-3"]),
+              CustomListView(items: ["item-J3-1", "item-J3-2", "item-J3-3"]),
+              CategoryEditor(),
+            ]),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: Color(0xAACC0000),
+          child: Icon(Icons.add,color: Colors.white,),
+        ),
+      ),
     );
   }
 
@@ -141,8 +145,7 @@ class CustomListView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start, // 左揃え
                   children: [
                     Text("名前: ${items[index]}の名前"),
-                    Text("評価: 4.5"),
-                    Text("再生数: 15 回"),
+                    Text("アクセス数: 15 回"),
                     Text("コメント: ${items[index]}のコメント"),
                   ],
                 ), alignment: Alignment.topLeft
@@ -175,4 +178,51 @@ class CustomListView extends StatelessWidget {
     );
   }
 }
+
+//最後のタブのカテゴリー編集機能のUIを返す
+class CategoryEditor extends StatelessWidget {
+  const CategoryEditor({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(padding: EdgeInsets.all(16),
+      child: GridView.count(
+        crossAxisCount: 2, // 2列
+        mainAxisSpacing: 20, // 縦方向の間隔
+        crossAxisSpacing: 20, // 横方向の間隔
+        children: [
+          _buildButton(Icon(Icons.add_circle_rounded,size: 40, color: Colors.white), "カテゴリ追加",Color(0xAACC0000)),
+          _buildButton(Icon(Icons.edit_note_sharp,size: 40, color: Colors.white), "カテゴリ編集", Color(0xAACC0000)),
+          _buildButton(SvgPicture.asset('assets/domain.svg',width: 40, height: 40), "ドメイン編集", Color(0xAACC0000)),
+          _buildButton(Icon(Icons.settings,size: 40, color: Colors.white), "設定", Color(0xAACC0000)),
+        ],
+      ),);
+
+  }
+
+  // ボタンウィジェットを生成するヘルパーメソッド
+  Widget _buildButton(Widget icon, String label, Color color) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.all(16),
+        backgroundColor: color,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      onPressed: () {
+        print('$label pressed');
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          icon,
+          SizedBox(height: 8),
+          Text(label, style: TextStyle(fontSize: 20, color: Colors.white)),
+        ],
+      ),
+    );
+  }
+
+
+}
+
 
