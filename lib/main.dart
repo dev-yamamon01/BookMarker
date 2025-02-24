@@ -148,17 +148,29 @@ class CustomListView extends StatelessWidget {
                 ), alignment: Alignment.topLeft
                     ,),
             trailing:
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Icon(Icons.ac_unit),
-                    Icon(Icons.ac_unit)
-                    // IconButton(onPressed: (){}, icon: Icon(Icons.ac_unit),visualDensity: VisualDensity.compact,),
-                    // IconButton(onPressed: (){}, icon: Icon(Icons.ac_unit),visualDensity: VisualDensity.compact,),
-                  ],
-                )
-
-          );
+            Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                      width: 20, // 横幅を制限
+                      height: 20, // 高さを制限
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.copy_sharp),
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                      )),
+                  SizedBox(
+                      width: 20, // 横幅を制限
+                      height: 20, // 高さを制限
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.more_vert),
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                      )),
+                ],
+              ));
         }
     );
   }
