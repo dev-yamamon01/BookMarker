@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'screens/category_more_screen.dart';
 import 'screens/category_listview_screen.dart';
+import 'components/my_drawer.dart';
 import 'components/my_tabbar.dart';
+import 'components/my_appbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -52,85 +54,17 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        key: _scaffoldKey,
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                    color: Color(0xAAFFFFFF),
-                    borderRadius: BorderRadius.circular(16.0)),
-                child: Column(
-                  children: [
-                    Text('Book Maker',
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Color(0xFFCC0000)
-                      ),
-                    ),
-                  SvgPicture.asset('assets/bookmark.svg', width: 80, height: 80)],
-                )
-              ),
-              ListTile(
-                leading: Icon(Icons.account_box),
-                title: Text("アカウント"),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.settings),
-                title: Text("設定"),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.menu_book_sharp),
-                title: Text("チュートリアル"),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.question_answer_outlined),
-                title: Text("問い合わせ"),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.contact_support),
-                title: Text("Book Makerについて"),
-                onTap: () {},
-              )
-            ],
+        key: _scaffoldKey,//Keyを設定すると別のファイルからscaffoldの状態を取得・操作できる
+        drawer: MyDrawer(),
+        appBar: AppBar(
+          automaticallyImplyLeading: false, // デフォルトのハンバーガーメニューを削除
+          title: MyAppbar(
+            widgetTitle: widget.title,
+            scaffoldKey: _scaffoldKey,
           ),
+          bottom: MyTabBar(tabController: _tabController),
         ),
-          appBar: AppBar(
-            automaticallyImplyLeading: false, // デフォルトのハンバーガーメニューを削除
-            title: Center(
-              child: Row(
-                children: [
-                  // IconButton(onPressed: (){}, icon: Icons.menu,color: Color(0xFFCC0000),),
-                  IconButton(
-                    onPressed: OnMenu,
-                    icon:
-                    SvgPicture.asset('assets/menu.svg', width: 30, height: 30),
-                  ),
-                  Row(children: [
-                    SvgPicture.asset(
-                        'assets/bookmark.svg', width: 30, height: 30),
-                    Text('  '),
-                    Text(
-                      widget.title,
-                      style: TextStyle(color: Color(0xFFCC0000) //AARRGGBB形式のHex
-                      ),
-                    )
-                  ]),
-                  IconButton(
-                      onPressed: OnSecret,
-                      icon:
-                      SvgPicture.asset('assets/key.svg', width: 30, height: 30))
-                ],
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              ),
-            ),
-            bottom: MyTabBar(tabController: _tabController),
-          ),
-            body: TabBarView(
+        body: TabBarView(
             controller: _tabController, // コントローラーを指定
             children: [
               CategoryListView(items: ["item-T1", "item-T2", "item-T3"]),
@@ -147,16 +81,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       ),
     );
   }
-
-  void OnMenu(){
-    print("menu-button pressed");
-    _scaffoldKey.currentState?.openDrawer();
-  }
-
-  void OnSecret(){
-    print("secret-button pressed");
-  }
-
 }
 
 
