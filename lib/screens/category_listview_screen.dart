@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:bookmarker/data/database_helper.dart';
 
 class CategoryListView extends StatelessWidget {
-  final List<String> items;
+  final List<Item> items;
   const CategoryListView({super.key,required this.items});
 
   @override
@@ -11,7 +12,7 @@ class CategoryListView extends StatelessWidget {
         itemBuilder: (context,index){
           return ListTile(
               leading: Image.network('https://asset.watch.impress.co.jp/img/car/docs/1436/350/001_o.jpg'), // 共通のアイコン
-              title: Text(items[index], style: TextStyle(fontSize: 18)),
+              title: Text(items[index].name, style: TextStyle(fontSize: 18)),
               subtitle:
               Container(child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start, // 左揃え

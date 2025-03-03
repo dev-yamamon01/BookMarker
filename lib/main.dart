@@ -5,8 +5,15 @@ import 'screens/category_listview_screen.dart';
 import 'components/my_drawer.dart';
 import 'components/my_tabbar.dart';
 import 'components/my_appbar.dart';
+import 'data/database_helper.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();  // Flutter の初期化を保証
+  databaseFactory = databaseFactoryFfi;
+
+  await DatabaseHelper.getDatabase();  // DB を事前に初期化
   runApp(const MyApp());
 }
 
@@ -37,6 +44,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<Item> items = [];//database_helperで定義した構造体
 
   @override
   void initState() {
@@ -49,6 +57,22 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     _tabController.dispose();
     super.dispose();
   }
+
+  // データを追加する
+  Future<void> _addItem() async {
+    await DatabaseHelper.insertItem(Item(name: 'New Item ${items.length + 1}'));
+    print("Itemの追加完了");
+    _loadItems();
+  }
+
+  // データを読み込む
+  Future<void> _loadItems() async {
+    final data = await DatabaseHelper.getItems();
+    setState(() {
+      items = data;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,14 +91,14 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         body: TabBarView(
             controller: _tabController, // コントローラーを指定
             children: [
-              CategoryListView(items: ["item-T1", "item-T2", "item-T3"]),
-              CategoryListView(items: ["item-J1-1", "item-J1-2", "item-J1-3"]),
-              CategoryListView(items: ["item-J2-1", "item-J2-2", "item-J2-3"]),
-              CategoryListView(items: ["item-J3-1", "item-J3-2", "item-J3-3"]),
+              CategoryListView(items: items),
+              CategoryListView(items: items),
+              CategoryListView(items: items),
+              CategoryListView(items: items),
               CategoryMoreScreen(),
             ]),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: _addItem,
           backgroundColor: Color(0xAACC0000),
           child: Icon(Icons.add,color: Colors.white,),
         ),

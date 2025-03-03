@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bookmarker/main.dart';
+import 'package:bookmarker/data/database_helper.dart';
 
 class MyAppbar extends StatelessWidget {
   final String widgetTitle;
@@ -45,6 +46,7 @@ class MyAppbar extends StatelessWidget {
   }
 
   void OnSecret(){
-    print("secret-button pressed");
+    DatabaseHelper dbHelper=new DatabaseHelper();
+    dbHelper.deleteAllItems();
   }
 }
