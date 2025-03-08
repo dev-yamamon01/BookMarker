@@ -7,6 +7,7 @@ import 'components/my_tabbar.dart';
 import 'components/my_appbar.dart';
 import 'data/database_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'data/models/url.dart';
 
 
 void main() async{
@@ -14,6 +15,7 @@ void main() async{
   databaseFactory = databaseFactoryFfi;
 
   await DatabaseHelper.getDatabase();  // DB を事前に初期化
+
   runApp(const MyApp());
 }
 
@@ -60,9 +62,24 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   // データを追加する
   Future<void> _addItem() async {
-    await DatabaseHelper.insertItem(Item(name: 'New Item ${items.length + 1}'));
-    print("Itemの追加完了");
-    _loadItems();
+    // await DatabaseHelper.insertItem(Item(name: 'New Item ${items.length + 1}'));
+    await DatabaseHelper.insertUrl(Url(
+        id: 1,
+        subDomain: 'sampleSubDomain',
+        domainId: 2,
+        tldId: 3,
+        directory: 'sampleDirectory',
+        title: 'sampleTitle',
+        subTitleId: 4,
+        genreId: 5,
+        evaluation: 3,
+        numOfViews: 150,
+        createdAt: DateTime.now().toIso8601String(),
+        comment: 'sampleComment',
+        imageResDir: 'sampleImageResDir'
+    ));
+    print("DBへのデータ挿入完了");
+    //_loadItems();
   }
 
   // データを読み込む

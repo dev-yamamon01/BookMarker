@@ -7,9 +7,9 @@ class Url {
   final String title;
   final int subTitleId;
   final int genreId;
-  final double evaluation;
+  final int evaluation;
   final int numOfViews;
-  final DateTime createdAt;
+  final String createdAt;
   final String comment;
   final String imageResDir;
 
@@ -42,7 +42,7 @@ class Url {
       genreId: json['genre_id'],
       evaluation: json['evaluation'],
       numOfViews: json['num_of_views'],
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: json['created_at'],
       comment: json['comment'],
       imageResDir: json['image_res_dir'],
     );
@@ -61,7 +61,7 @@ class Url {
       'genre_id': genreId,
       'evaluation': evaluation,
       'num_of_views': numOfViews,
-      'created_at': createdAt.toIso8601String(),
+      'created_at': createdAt,
       'comment': comment,
       'image_res_dir': imageResDir,
     };
