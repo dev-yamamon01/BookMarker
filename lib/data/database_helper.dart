@@ -4,24 +4,6 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:bookmarker/data/models/url.dart';
 
-// データモデル
-class Item {
-  final int? id;
-  final String name;
-
-  Item({this.id, required this.name});
-
-  // Map に変換（データベース保存用）
-  Map<String, dynamic> toMap() {
-    return {'id': id, 'name': name};
-  }
-
-  // Map から Item インスタンスを生成
-  factory Item.fromMap(Map<String, dynamic> map) {
-    return Item(id: map['id'], name: map['name']);
-  }
-}
-
 // データベース管理クラス
 class DatabaseHelper {
   static Database? _database;
@@ -189,19 +171,19 @@ class DatabaseHelper {
   }
 
   // データ取得
-  static Future<List<Item>> getItems() async {
+  static Future<List<Url>> getItems() async {
     final db = await getDatabase();
-    final List<Map<String, dynamic>> maps = await db.query('items');
+    final List<Map<String, dynamic>> maps = await db.query('urls');
 
     return List.generate(maps.length, (i) {
-      return Item.fromMap(maps[i]);
+      return Url.fromJson(maps[i]);
     });
   }
 
   //テーブルのデータを全削除
   Future<void> deleteAllItems() async {
     final db = await getDatabase();
-    await db.delete('items'); // DELETE FROM items
+    await db.delete('urls'); // DELETE FROM items
   }
 
 }

@@ -14,8 +14,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();  // Flutter の初期化を保証
   databaseFactory = databaseFactoryFfi;
 
-  await DatabaseHelper.getDatabase();  // DB を事前に初期化
-
+  //await DatabaseHelper.getDatabase();  // DB を事前に初期化(これを2回呼んでしまうとDBエラーが発生するので注意)
   runApp(const MyApp());
 }
 
@@ -46,7 +45,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Item> items = [];//database_helperで定義した構造体
+  List<Url> urls=[];
 
   @override
   void initState() {
@@ -62,7 +61,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   // データを追加する
   Future<void> _addItem() async {
-    // await DatabaseHelper.insertItem(Item(name: 'New Item ${items.length + 1}'));
     await DatabaseHelper.insertUrl(Url(
         id: 1,
         subDomain: 'sampleSubDomain',
@@ -79,14 +77,14 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         imageResDir: 'sampleImageResDir'
     ));
     print("DBへのデータ挿入完了");
-    //_loadItems();
+    _loadItems();
   }
 
   // データを読み込む
   Future<void> _loadItems() async {
     final data = await DatabaseHelper.getItems();
     setState(() {
-      items = data;
+      urls = data;
     });
   }
 
@@ -108,10 +106,10 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         body: TabBarView(
             controller: _tabController, // コントローラーを指定
             children: [
-              CategoryListView(items: items),
-              CategoryListView(items: items),
-              CategoryListView(items: items),
-              CategoryListView(items: items),
+              CategoryListView(urls: urls),
+              CategoryListView(urls: urls),
+              CategoryListView(urls: urls),
+              CategoryListView(urls: urls),
               CategoryMoreScreen(),
             ]),
         floatingActionButton: FloatingActionButton(

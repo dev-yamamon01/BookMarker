@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:bookmarker/data/database_helper.dart';
+import 'package:bookmarker/data/models/url.dart';
 
 class CategoryListView extends StatelessWidget {
-  final List<Item> items;
-  const CategoryListView({super.key,required this.items});
+  final List<Url> urls;
+  const CategoryListView({super.key,required this.urls});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: items.length,
+        itemCount: urls.length,
         itemBuilder: (context,index){
           return ListTile(
               leading: Image.network('https://asset.watch.impress.co.jp/img/car/docs/1436/350/001_o.jpg'), // 共通のアイコン
-              title: Text(items[index].name, style: TextStyle(fontSize: 18)),
+              title: Text(urls[index].title, style: TextStyle(fontSize: 18)),
               subtitle:
               Container(child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start, // 左揃え
                 children: [
-                  Text("名前: ${items[index]}の名前"),
-                  Text("アクセス数: 15 回"),
-                  Text("コメント: ${items[index]}のコメント"),
+                  Text("名前(ID): ${urls[index].subTitleId}"),
+                  Text("アクセス数: ${urls[index].numOfViews} 回"),
+                  Text("コメント: ${urls[index].comment}のコメント"),
                 ],
               ), alignment: Alignment.topLeft
                 ,),
