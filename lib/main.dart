@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+    _loadItems();
   }
 
   @override
@@ -62,7 +63,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   // データを追加する
   Future<void> _addItem() async {
     await DatabaseHelper.insertUrl(Url(
-        id: 1,
         subDomain: 'sampleSubDomain',
         domainId: 2,
         tldId: 3,

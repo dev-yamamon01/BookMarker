@@ -1,5 +1,5 @@
 class Url {
-  final int id;
+  final int? id;
   final String subDomain;
   final int domainId;
   final int tldId;
@@ -14,7 +14,7 @@ class Url {
   final String imageResDir;
 
   Url({
-    required this.id,
+    this.id,
     required this.subDomain,
     required this.domainId,
     required this.tldId,

@@ -10,10 +10,12 @@ class DatabaseHelper {
 
   // データベースを取得するメソッド
   static Future<Database> getDatabase() async {
-    if (_database != null) return _database!;
+    if (_database != null && (_database?.isOpen ?? false) ){
+      openDatabase(_database?.path ?? "");
+      return _database!;
+    }
 
     _database = await _initDatabase();
-    print('DB初期化完了');
 
     checkDatabaseExists(_database?.path);
     checkTables(_database?.path);
@@ -74,13 +76,14 @@ class DatabaseHelper {
 
     final path=await createdbPath();
 
-    print(path);
-    print('にテーブルを作成します');
-
       return await openDatabase(
         path,
         version: 1,
         onCreate: (db, version) async{//onCreateはDBがすでに作成されている場合は呼ばれない
+
+          print(path);
+          print('にテーブルを作成します');
+
           try {
             var batch = db.batch();//batchを用いて複数のSQL文を実行する
 
