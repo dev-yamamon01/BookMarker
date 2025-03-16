@@ -8,6 +8,7 @@ import 'components/my_appbar.dart';
 import 'data/database_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'data/models/url.dart';
+import 'package:bookmarker/screens/add_url_screen.dart';
 
 
 void main() async{
@@ -113,7 +114,13 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               CategoryMoreScreen(),
             ]),
         floatingActionButton: FloatingActionButton(
-          onPressed: _addItem,
+          onPressed:(){
+            //showInputDialog(context);
+            showDialog(context: context, builder: (BuildContext context) {
+              return AddUrlScreen(); // AddUrlScreen をダイアログとして表示
+            },
+            );
+          },
           backgroundColor: Color(0xAACC0000),
           child: Icon(Icons.add,color: Colors.white,),
         ),
