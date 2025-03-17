@@ -1,8 +1,6 @@
 class Url {
   final int? id;
-  final String subDomain;
   final int domainId;
-  final int tldId;
   final String directory;
   final String title;
   final int subTitleId;
@@ -15,9 +13,7 @@ class Url {
 
   Url({
     this.id,
-    required this.subDomain,
     required this.domainId,
-    required this.tldId,
     required this.directory,
     required this.title,
     required this.subTitleId,
@@ -33,9 +29,7 @@ class Url {
   factory Url.fromJson(Map<String, dynamic> json) {
     return Url(
       id: json['id'],
-      subDomain: json['sub_domain'],
       domainId: json['domain_id'],
-      tldId: json['tld_id'],
       directory: json['directory'],
       title: json['title'],
       subTitleId: json['sub_title_id'],
@@ -52,9 +46,7 @@ class Url {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'sub_domain': subDomain,
       'domain_id': domainId,
-      'tld_id': tldId,
       'directory':directory,
       'title': title,
       'sub_title_id': subTitleId,

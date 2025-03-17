@@ -64,9 +64,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   // データを追加する
   Future<void> _addItem() async {
     await DatabaseHelper.insertUrl(Url(
-        subDomain: 'sampleSubDomain',
         domainId: 2,
-        tldId: 3,
         directory: 'sampleDirectory',
         title: 'sampleTitle',
         subTitleId: 4,

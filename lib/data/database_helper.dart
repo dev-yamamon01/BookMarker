@@ -95,14 +95,6 @@ class DatabaseHelper {
           );
         ''');
 
-          //tldsテーブルの作成
-          batch.execute('''
-              CREATE TABLE IF NOT EXISTS tlds(
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-                tld_name TEXT NOT NULL
-              );
-            ''');
-
             //subtitlesテーブルの作成
             batch.execute('''
         CREATE TABLE IF NOT EXISTS subtitles(
@@ -125,9 +117,7 @@ class DatabaseHelper {
             batch.execute('''
           CREATE TABLE IF NOT EXISTS urls(
             id INTEGER PRIMARY KEY,
-            sub_domain TEXT,
-            domain_id INTEGER NOT NULL,
-            tld_id INTEGER NOT NULL,
+            domain_id INTEGER NOT NULL,       
             directory TEXT,
             title TEXT,
             sub_title_id INTEGER,
@@ -138,7 +128,6 @@ class DatabaseHelper {
             comment TEXT,
             image_res_dir TEXT,
             FOREIGN KEY (domain_id) REFERENCES domains(id),
-            FOREIGN KEY (tld_id) REFERENCES tlds(id),
             FOREIGN KEY (sub_title_id) REFERENCES subtitles(id),
             FOREIGN KEY (genre_id) REFERENCES genres(id)
         );

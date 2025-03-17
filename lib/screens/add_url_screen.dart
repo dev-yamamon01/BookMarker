@@ -21,9 +21,10 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
   TextEditingController subTitleController = TextEditingController();
   TextEditingController titleController = TextEditingController();
 
-  String? url,domain,title,subTitle,dir,comment;
+  String? url,domain,title,subTitle,dir,comment,selectedGenre,_selectedGenre;
   int evaluation=0;
 
+  List<String> genreItems = ['genre-1', 'genre-2', 'genre-3']; // 選択肢リスト
   late WebViewController webViewController;
 
   @override
@@ -60,6 +61,8 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
       //   },
       // ))
       // ..loadRequest(Uri.parse(inputUrl));
+
+    selectedGenre=genreItems.first;//ドロップダウンのデフォルト値をここで設定
 
       urlController.addListener(() {
         // TextFieldの文字が変わったタイミングでWebViewを再読み込み
@@ -102,6 +105,26 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                     SizedBox(width: 100, child: Text("ドメイン:"),),
                     Expanded(child: Text(
                         domain ?? ""
+                    ))
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(width: 100, child: Text("ジャンル："),),
+                    Expanded(child: DropdownButton(
+                      value: selectedGenre,//選択された値
+                        items: genreItems.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged:(String? selectedGenre){
+                        setState(() {
+                          //選択された値を保存する変数
+                          _selectedGenre=selectedGenre ?? "";
+                        });
+                        }
                     ))
                   ],
                 ),
