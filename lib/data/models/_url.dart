@@ -1,4 +1,4 @@
-class Url {
+class MyUrl {
   final int? id;
   final int domainId;
   final String directory;
@@ -11,7 +11,7 @@ class Url {
   final String comment;
   final String imageResDir;
 
-  Url({
+  MyUrl({
     this.id,
     required this.domainId,
     required this.directory,
@@ -26,8 +26,8 @@ class Url {
   });
 
   //DBからデータを取得するときに使う。JSONからUrlオブジェクトに変換
-  factory Url.fromJson(Map<String, dynamic> json) {
-    return Url(
+  factory MyUrl.fromJson(Map<String, dynamic> json) {
+    return MyUrl(
       id: json['id'],
       domainId: json['domain_id'],
       directory: json['directory'],

@@ -7,14 +7,17 @@ import 'components/my_tabbar.dart';
 import 'components/my_appbar.dart';
 import 'data/database_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'data/models/url.dart';
+import 'data/models/_url.dart';
 import 'package:bookmarker/screens/add_url_screen.dart';
+import 'package:bookmarker/data/database.dart'; // ← データベースをインポート
 
+// ✅ グローバルにデータベースインスタンスを作成
+final AppDatabase database = AppDatabase();
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();  // Flutter の初期化を保証
-  databaseFactory = databaseFactoryFfi;
-
+  //databaseFactory = databaseFactoryFfi;
+  print("Database is open: ${database.executor.ensureOpen(database)}"); // DBが開かれているかチェック
   //await DatabaseHelper.getDatabase();  // DB を事前に初期化(これを2回呼んでしまうとDBエラーが発生するので注意)
   runApp(const MyApp());
 }
@@ -46,7 +49,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Url> urls=[];
+  List<MyUrl> urls=[];
 
   @override
   void initState() {
@@ -63,20 +66,20 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   // データを追加する
   Future<void> _addItem() async {
-    await DatabaseHelper.insertUrl(Url(
-        domainId: 2,
-        directory: 'sampleDirectory',
-        title: 'sampleTitle',
-        subTitleId: 4,
-        genreId: 5,
-        evaluation: 3,
-        numOfViews: 150,
-        createdAt: DateTime.now().toIso8601String(),
-        comment: 'sampleComment',
-        imageResDir: 'sampleImageResDir'
-    ));
+    // await DatabaseHelper.insertUrl(MyUrl(
+    //     domainId: 2,
+    //     directory: 'sampleDirectory',
+    //     title: 'sampleTitle',
+    //     subTitleId: 4,
+    //     genreId: 5,
+    //     evaluation: 3,
+    //     numOfViews: 150,
+    //     createdAt: DateTime.now().toIso8601String(),
+    //     comment: 'sampleComment',
+    //     imageResDir: 'sampleImageResDir'
+    // ));
     print("DBへのデータ挿入完了");
-    _loadItems();
+    //_loadItems();
   }
 
   // データを読み込む

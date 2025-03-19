@@ -6,6 +6,10 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Import for iOS/macOS features.
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:bookmarker/data/database.dart';
+
+//グローバルにデータベースインスタンスを作成
+final AppDatabase database = AppDatabase();
 
 class AddUrlScreen extends StatefulWidget {
   const AddUrlScreen({super.key});
@@ -204,6 +208,15 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                     print(evaluation);
                     print(commentController.text);
                     print("----------------------");
+                    insertUrl(database,
+                        domain,
+                        dir,
+                        1,
+                        titleController.text,
+                        subTitleController.text,
+                        evaluation,
+                        commentController.text,
+                        "path/to/image/dir");
                     Navigator.pop(context); // ダイアログを閉じる
                 }:null,
                 child: Text("登録"),

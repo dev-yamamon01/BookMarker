@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'package:bookmarker/data/models/url.dart';
+import 'package:bookmarker/data/models/_url.dart';
 
 // データベース管理クラス
 class DatabaseHelper {
@@ -17,8 +17,8 @@ class DatabaseHelper {
 
     _database = await _initDatabase();
 
-    checkDatabaseExists(_database?.path);
-    checkTables(_database?.path);
+    // checkDatabaseExists(_database?.path);
+    // checkTables(_database?.path);
 
     return _database!;
   }
@@ -152,7 +152,7 @@ class DatabaseHelper {
   }
 
   // データ挿入
-  static Future<void> insertUrl(Url url) async {
+  static Future<void> insertUrl(MyUrl url) async {
     final db = await getDatabase();
     print('データを挿入します');
     await db.insert(
@@ -163,12 +163,12 @@ class DatabaseHelper {
   }
 
   // データ取得
-  static Future<List<Url>> getItems() async {
+  static Future<List<MyUrl>> getItems() async {
     final db = await getDatabase();
     final List<Map<String, dynamic>> maps = await db.query('urls');
 
     return List.generate(maps.length, (i) {
-      return Url.fromJson(maps[i]);
+      return MyUrl.fromJson(maps[i]);
     });
   }
 

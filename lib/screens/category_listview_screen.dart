@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:bookmarker/data/database_helper.dart';
-import 'package:bookmarker/data/models/url.dart';
+import 'package:bookmarker/data/models/_url.dart';
 
 class CategoryListView extends StatelessWidget {
-  final List<Url> urls;
+  final List<MyUrl> urls;
   const CategoryListView({super.key,required this.urls});
 
   @override
