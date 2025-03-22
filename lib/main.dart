@@ -10,6 +10,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'data/models/_url.dart';
 import 'package:bookmarker/screens/add_url_screen.dart';
 import 'package:bookmarker/data/database.dart'; // ← データベースをインポート
+import 'package:bookmarker/data/tables.dart';
 
 // ✅ グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
@@ -49,7 +50,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<MyUrl> urls=[];
+  List<Url>? genre1Urls,genre2Urls,genre3Urls,top3Urls;
 
   @override
   void initState() {
@@ -84,9 +85,13 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   // データを読み込む
   Future<void> _loadItems() async {
-    final data = await DatabaseHelper.getItems();
-    setState(() {
-      urls = data;
+
+    setState(() async{
+
+      //top3Urls=await getUrl(database, 0);
+      genre1Urls=await getUrl(database, 1);
+      genre2Urls=await getUrl(database, 2);
+      genre3Urls=await getUrl(database, 3);
     });
   }
 
@@ -108,10 +113,10 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         body: TabBarView(
             controller: _tabController, // コントローラーを指定
             children: [
-              CategoryListView(urls: urls),
-              CategoryListView(urls: urls),
-              CategoryListView(urls: urls),
-              CategoryListView(urls: urls),
+              CategoryListView(urls: genre1Urls),
+              CategoryListView(urls: genre1Urls),
+              CategoryListView(urls: genre2Urls),
+              CategoryListView(urls: genre3Urls),
               CategoryMoreScreen(),
             ]),
         floatingActionButton: FloatingActionButton(
