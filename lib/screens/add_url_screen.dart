@@ -7,6 +7,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Import for iOS/macOS features.
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:bookmarker/data/database.dart';
+import 'package:drift/drift.dart' as drift;
 
 //グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
@@ -209,14 +210,23 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                     print(commentController.text);
                     print("----------------------");
                     insertUrl(database,
-                        domain,
-                        dir,
-                        1,
-                        titleController.text,
-                        subTitleController.text,
-                        evaluation,
-                        commentController.text,
-                        "path/to/image/dir");
+                        UrlsCompanion(
+                          directory: drift.Value(dir ?? ""),
+                          genreId: drift.Value(1),
+                          title: drift.Value(titleController.text),
+                          evaluation: drift.Value(evaluation),
+                          comment: drift.Value(commentController.text),
+                          imageResDir: drift.Value("path/to/image/dir"),
+                        ),
+                        domain,subTitleController.text);
+                        // domain,
+                        // dir,
+                        // 1,
+                        // titleController.text,
+                        // subTitleController.text,
+                        // evaluation,
+                        // commentController.text,
+                        // "path/to/image/dir");
                     Navigator.pop(context); // ダイアログを閉じる
                 }:null,
                 child: Text("登録"),
