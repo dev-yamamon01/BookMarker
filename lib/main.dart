@@ -65,33 +65,20 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  // データを追加する
-  Future<void> _addItem() async {
-    // await DatabaseHelper.insertUrl(MyUrl(
-    //     domainId: 2,
-    //     directory: 'sampleDirectory',
-    //     title: 'sampleTitle',
-    //     subTitleId: 4,
-    //     genreId: 5,
-    //     evaluation: 3,
-    //     numOfViews: 150,
-    //     createdAt: DateTime.now().toIso8601String(),
-    //     comment: 'sampleComment',
-    //     imageResDir: 'sampleImageResDir'
-    // ));
-    print("DBへのデータ挿入完了");
-    //_loadItems();
-  }
-
   // データを読み込む
   Future<void> _loadItems() async {
 
     setState(() async{
 
       //top3Urls=await getUrl(database, 0);
-      genre1Urls=await getUrl(database, 1);
-      genre2Urls=await getUrl(database, 2);
-      genre3Urls=await getUrl(database, 3);
+      genre1Urls=await getUrl(1);
+      genre2Urls=await getUrl(2);
+      genre3Urls=await getUrl(3);
+
+      //ここで各Urlが1つずつしか取得できていない。
+      print(genre1Urls?.length);
+      print(genre2Urls?.length);
+      print(genre3Urls?.length);
     });
   }
 

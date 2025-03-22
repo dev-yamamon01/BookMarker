@@ -209,7 +209,7 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                     print(evaluation);
                     print(commentController.text);
                     print("----------------------");
-                    insertUrl(database,
+                    insertUrl(
                         UrlsCompanion(
                           directory: drift.Value(dir ?? ""),
                           genreId: drift.Value(1),
@@ -219,14 +219,7 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                           imageResDir: drift.Value("path/to/image/dir"),
                         ),
                         domain,subTitleController.text);
-                        // domain,
-                        // dir,
-                        // 1,
-                        // titleController.text,
-                        // subTitleController.text,
-                        // evaluation,
-                        // commentController.text,
-                        // "path/to/image/dir");
+
                     Navigator.pop(context); // ダイアログを閉じる
                 }:null,
                 child: Text("登録"),

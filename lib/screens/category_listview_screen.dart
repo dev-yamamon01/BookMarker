@@ -20,9 +20,23 @@ class CategoryListView extends StatelessWidget {
               Container(child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start, // 左揃え
                 children: [
-                  Text("名前(ID): ${urls?[index].subTitleId ?? ""}"),
-                  Text("アクセス数: ${urls?[index].numOfViews} 回"),
-                  Text("コメント: ${urls?[index].comment}のコメント"),
+                    FutureBuilder<String?>(
+                        future: getSubtitleName(urls?[index]?.subTitleId ?? 0),
+                        // 非同期メソッドを呼び出す
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Text("Loading...");
+                          } else if (snapshot.hasError) {
+                            return Text("Error: ${snapshot.error}");
+                          } else if (snapshot.hasData) {
+                            return Text("名前: ${snapshot.data ?? ""}");
+                          } else {
+                            return Text("No Data");
+                          }
+                        }),
+                    Text("アクセス数: ${urls?[index].numOfViews} 回"),
+                    Text("コメント: ${urls?[index].comment}"),
                 ],
               ), alignment: Alignment.topLeft
                 ,),
