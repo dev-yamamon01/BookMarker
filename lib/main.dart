@@ -5,12 +5,10 @@ import 'screens/category_listview_screen.dart';
 import 'components/my_drawer.dart';
 import 'components/my_tabbar.dart';
 import 'components/my_appbar.dart';
-import 'data/database_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'data/models/_url.dart';
 import 'package:bookmarker/screens/add_url_screen.dart';
 import 'package:bookmarker/data/database.dart'; // ← データベースをインポート
-import 'package:bookmarker/data/tables.dart';
+import 'package:bookmarker/data/models/tables.dart';
 
 // ✅ グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();

@@ -3,7 +3,7 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'package:bookmarker/data/tables.dart'; // ここでテーブル定義をインポート
+import 'package:bookmarker/data/models/tables.dart'; // ここでテーブル定義をインポート
 import 'package:drift/src/runtime/executor/executor.dart';
 
 part 'database.g.dart';// 「flutter pub run build_runner build --delete-conflicting-outputs」により、テーブル作成コードが自動生成される

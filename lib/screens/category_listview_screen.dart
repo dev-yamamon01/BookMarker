@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bookmarker/data/database_helper.dart';
-// import 'package:bookmarker/data/models/_url.dart';
-import 'package:bookmarker/data/tables.dart';
+import 'package:bookmarker/data/models/tables.dart';
 import 'package:bookmarker/data/database.dart';
 
 class CategoryListView extends StatelessWidget {
