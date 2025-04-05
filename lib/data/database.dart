@@ -20,6 +20,25 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
+  //以下でジャンルテーブルのseederを設定する
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+  onCreate: (Migrator m) async {
+  await m.createAll();
+
+  // 🎯 Seederのような初期データをここで挿入！
+  await into(genres).insert(GenresCompanion(
+  genreName: Value('ジャンルA'),
+  ));
+  await into(genres).insert(GenresCompanion(
+  genreName: Value('ジャンルB'),
+  ));
+  await into(genres).insert(GenresCompanion(
+  genreName: Value('ジャンルC'),
+  ));
+  },
+  );
+
 }
 
 LazyDatabase _openConnection() {//SQLiteのデータベースファイルを開く

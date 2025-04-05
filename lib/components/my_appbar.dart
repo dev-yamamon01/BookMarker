@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bookmarker/main.dart';
+import 'package:bookmarker/data/database.dart';
+import 'package:path/path.dart' as p;
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+
 
 class MyAppbar extends StatelessWidget {
   final String widgetTitle;
@@ -44,7 +49,17 @@ class MyAppbar extends StatelessWidget {
     scaffoldKey.currentState?.openDrawer();
   }
 
-  void OnSecret(){
-
+  void OnSecret() async{
+    await resetDatabase();
   }
+
+  Future<void> resetDatabase() async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    final dbFile = File(p.join(dbFolder.path, 'bookmaker.sqlite')); // 実際のファイルのパスを取得
+    if (await dbFile.exists()) {
+      await dbFile.delete(); // ファイル削除でリセット完了！
+      print('-------DBリセット完了-------');
+    }
+  }
+
 }
