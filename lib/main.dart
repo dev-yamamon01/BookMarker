@@ -12,6 +12,7 @@ import 'package:bookmarker/data/models/tables.dart';
 
 // ✅ グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
+final GlobalKey<MyHomePageState> globalKey = GlobalKey<MyHomePageState>();
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();  // Flutter の初期化を保証
@@ -20,6 +21,7 @@ void main() async{
   //await DatabaseHelper.getDatabase();  // DB を事前に初期化(これを2回呼んでしまうとDBエラーが発生するので注意)
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -42,19 +44,20 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   List<Url>? genre1Urls,genre2Urls,genre3Urls,top3Urls;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    _loadItems();
+    loadItems();
   }
 
   @override
@@ -64,20 +67,17 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   }
 
   // データを読み込む
-  Future<void> _loadItems() async {
-
-    setState(() async{
+  Future<void> loadItems() async {
 
       //top3Urls=await getUrl(database, 0);
       genre1Urls=await getUrl(1);
       genre2Urls=await getUrl(2);
       genre3Urls=await getUrl(3);
 
-      //ここで各Urlが1つずつしか取得できていない。
-      print(genre1Urls?.length);
-      print(genre2Urls?.length);
-      print(genre3Urls?.length);
-    });
+      setState(() {
+        //これがないとUI更新されないので注意
+      });
+
   }
 
 
@@ -108,7 +108,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           onPressed:(){
             //showInputDialog(context);
             showDialog(context: context, builder: (BuildContext context) {
-              return AddUrlScreen(); // AddUrlScreen をダイアログとして表示
+              return AddUrlScreen(
+                onConfirm:() async{
+                  await loadItems();//新規でURLを追加したらタイミングでロードするために関数を渡す
+                }
+              );
+              //return AddUrlScreen(); // AddUrlScreen をダイアログとして表示
             },
             );
           },
@@ -119,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     );
   }
 }
+
 
 
 

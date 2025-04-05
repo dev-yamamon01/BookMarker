@@ -31,12 +31,20 @@ LazyDatabase _openConnection() {//SQLiteのデータベースファイルを開�
     return NativeDatabase(file);
   });
 }
+
+Future<List<Genre>> getGenre() async{
+  AppDatabase db=AppDatabase();
+  final query =db.select(db.genres);
+
+  final result = await query.get();
+  return result;
+}
+
 Future<List<Url>?> getUrl(int genreId) async{
   AppDatabase db=AppDatabase();
   final query =db.select(db.urls)..where((tbl) => tbl.genreId.equals(genreId));
 
   final result = await query.get();
-
   return result;
 }
 

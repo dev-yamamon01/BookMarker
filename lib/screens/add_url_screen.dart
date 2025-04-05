@@ -7,13 +7,15 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Import for iOS/macOS features.
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/main.dart';
 import 'package:drift/drift.dart' as drift;
 
 //グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
 
 class AddUrlScreen extends StatefulWidget {
-  const AddUrlScreen({super.key});
+  final Future<void> Function() onConfirm;
+  const AddUrlScreen({super.key,required this.onConfirm});
 
   @override
   State<AddUrlScreen> createState() => _AddUrlScreenState();
@@ -26,10 +28,12 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
   TextEditingController subTitleController = TextEditingController();
   TextEditingController titleController = TextEditingController();
 
-  String? url,domain,title,subTitle,dir,comment,selectedGenre,_selectedGenre;
+  String? url,domain,title,subTitle,dir,comment,selectedGenreName;
   int evaluation=0;
 
   List<String> genreItems = ['genre-1', 'genre-2', 'genre-3']; // 選択肢リスト
+  List<Genre?> genres=[];
+  Genre? selectedGenre;
   late WebViewController webViewController;
 
   @override
@@ -67,8 +71,9 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
       // ))
       // ..loadRequest(Uri.parse(inputUrl));
 
-    selectedGenre=genreItems.first;//ドロップダウンのデフォルト値をここで設定
+    loadGenre();
 
+    //selectedGenre=genreItems.first;//ドロップダウンのデフォルト値をここで設定
       urlController.addListener(() {
         // TextFieldの文字が変わったタイミングでWebViewを再読み込み
         //webViewController.reload(); // reload メソッドを呼び出す
@@ -81,6 +86,14 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
           print(url);
         });
 
+    });
+
+  }
+
+  Future<void>loadGenre()async{
+    genres=await getGenre();
+    setState(() {
+      selectedGenreName=genres?.first?.genreName ?? "";//ドロップダウンのデフォルト値をここで設定
     });
 
   }
@@ -116,18 +129,21 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                 Row(
                   children: [
                     SizedBox(width: 100, child: Text("ジャンル："),),
-                    Expanded(child: DropdownButton(
+                    Expanded(child: DropdownButton<Genre>(
                       value: selectedGenre,//選択された値
-                        items: genreItems.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
+                        hint: Text("ジャンルを選択"),
+                        items: genres.map((genre) {
+                          return DropdownMenuItem<Genre>(
+                            value: genre,
+                            child: Text(genre?.genreName ?? ""),
                           );
                         }).toList(),
-                        onChanged:(String? selectedGenre){
+                        onChanged:(Genre? _selectedGenre){
                         setState(() {
                           //選択された値を保存する変数
-                          _selectedGenre=selectedGenre ?? "";
+                          if(_selectedGenre!=null) {
+                            selectedGenre = _selectedGenre;
+                          }
                         });
                         }
                     ))
@@ -178,7 +194,7 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                   decoration: InputDecoration(hintText: "コメントを追加"),
                 ),
                 Container(
-                  height: 300,
+                  height: 200,
                   width: double.maxFinite,
                   child: Image.network('https://salop.co.jp/wp-content/uploads/2021/04/flutter-logo-sharing.png'),
                   //  child: WebViewWidget(
@@ -212,7 +228,7 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                     insertUrl(
                         UrlsCompanion(
                           directory: drift.Value(dir ?? ""),
-                          genreId: drift.Value(1),
+                          genreId: drift.Value(selectedGenre!.id),
                           title: drift.Value(titleController.text),
                           evaluation: drift.Value(evaluation),
                           comment: drift.Value(commentController.text),
@@ -221,6 +237,10 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                         domain,subTitleController.text);
 
                     Navigator.pop(context); // ダイアログを閉じる
+
+                  //ここでアイテムを再度読込みたい
+                    await widget.onConfirm();
+
                 }:null,
                 child: Text("登録"),
               ),
