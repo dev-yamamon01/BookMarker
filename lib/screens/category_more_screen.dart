@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:bookmarker/main.dart';
+import 'package:bookmarker/screens/genre_edit_screen.dart';
 
 //最後のタブのカテゴリー編集機能のUIを返す
 class CategoryMoreScreen extends StatelessWidget {
   const CategoryMoreScreen({super.key});
+  final String labelGenreAdd="ジャンル追加";
+  final String labelGenreEdit="ジャンル編集";
+  final String labelDomainEdit="ドメイン編集";
+  final String labelSetting="設定";
 
   @override
   Widget build(BuildContext context) {
@@ -13,17 +19,17 @@ class CategoryMoreScreen extends StatelessWidget {
         mainAxisSpacing: 20, // 縦方向の間隔
         crossAxisSpacing: 20, // 横方向の間隔
         children: [
-          _buildButton(Icon(Icons.add_circle_rounded,size: 40, color: Colors.white), "カテゴリ追加",Color(0xAACC0000)),
-          _buildButton(Icon(Icons.edit_note_sharp,size: 40, color: Colors.white), "カテゴリ編集", Color(0xAACC0000)),
-          _buildButton(SvgPicture.asset('assets/domain.svg',width: 40, height: 40), "ドメイン編集", Color(0xAACC0000)),
-          _buildButton(Icon(Icons.settings,size: 40, color: Colors.white), "設定", Color(0xAACC0000)),
+          _buildButton(Icon(Icons.add_circle_rounded,size: 40, color: Colors.white), labelGenreAdd,Color(0xAACC0000),context),
+          _buildButton(Icon(Icons.edit_note_sharp,size: 40, color: Colors.white), labelGenreEdit, Color(0xAACC0000),context),
+          _buildButton(SvgPicture.asset('assets/domain.svg',width: 40, height: 40), labelDomainEdit, Color(0xAACC0000),context),
+          _buildButton(Icon(Icons.settings,size: 40, color: Colors.white), labelSetting, Color(0xAACC0000),context),
         ],
       ),);
 
   }
 
   // ボタンウィジェットを生成するヘルパーメソッド
-  Widget _buildButton(Widget icon, String label, Color color) {
+  Widget _buildButton(Widget icon, String label, Color color, BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.all(16),
@@ -31,7 +37,15 @@ class CategoryMoreScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       onPressed: () {
-        print('$label pressed');
+        if (label == labelGenreAdd) {
+        } else if (label == labelGenreEdit) {
+          //Navigator.pushNamed(context, '/genreEdit');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GenreEditScreen()),
+          );
+        } else if (label == labelDomainEdit) {
+        } else {}
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

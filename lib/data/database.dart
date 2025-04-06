@@ -28,13 +28,13 @@ class AppDatabase extends _$AppDatabase {
 
   // 🎯 Seederのような初期データをここで挿入！
   await into(genres).insert(GenresCompanion(
-  genreName: Value('ジャンルA'),
+  genreName: Value('ジャンル1'),
   ));
   await into(genres).insert(GenresCompanion(
-  genreName: Value('ジャンルB'),
+  genreName: Value('ジャンル2'),
   ));
   await into(genres).insert(GenresCompanion(
-  genreName: Value('ジャンルC'),
+  genreName: Value('ジャンル3'),
   ));
   },
   );
