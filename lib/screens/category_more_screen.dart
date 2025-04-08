@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bookmarker/main.dart';
 import 'package:bookmarker/screens/genre_edit_screen.dart';
+import 'package:go_router/go_router.dart';
 
 //最後のタブのカテゴリー編集機能のUIを返す
 class CategoryMoreScreen extends StatelessWidget {
@@ -39,11 +40,9 @@ class CategoryMoreScreen extends StatelessWidget {
       onPressed: () {
         if (label == labelGenreAdd) {
         } else if (label == labelGenreEdit) {
-          //Navigator.pushNamed(context, '/genreEdit');
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => GenreEditScreen()),
-          );
+
+          context.push('/genreEdit');
+
         } else if (label == labelDomainEdit) {
         } else {}
       },

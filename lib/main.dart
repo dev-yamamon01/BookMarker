@@ -10,6 +10,8 @@ import 'package:bookmarker/screens/add_url_screen.dart';
 import 'package:bookmarker/data/database.dart'; // ← データベースをインポート
 import 'package:bookmarker/data/models/tables.dart';
 import 'package:bookmarker/screens/genre_edit_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bookmarker/router.dart';
 
 // ✅ グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
@@ -29,18 +31,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Book Maker',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Book Maker'),
-      //以下を定義してNavigator.pushNamed(context, '/genreEdit');でcategory_more_screenで試行したがうまくいかない
-      routes: {
-        '/genreEdit':(context) => GenreEditScreen()
-      },
+    return MaterialApp.router(
+      routerConfig: router,//router.dartで定義している変数
     );
+    // return MaterialApp(
+    //   title: 'Book Maker',
+    //   theme: ThemeData(
+    //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    //     useMaterial3: true,
+    //   ),
+    //   home: const MyHomePage(title: 'Book Maker'),
+    //   //以下を定義してNavigator.pushNamed(context, '/genreEdit');でcategory_more_screenで試行したがうまくいかない
+    //   routes: {
+    //     '/genreEdit':(context) => GenreEditScreen()
+    //   },
+    // );
   }
 }
 
