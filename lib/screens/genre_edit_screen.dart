@@ -27,8 +27,29 @@ class GenreEditScreen extends StatelessWidget {
               final genre = genres[index];
               return ListTile(
                 title: Text(genre.genreName),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                        width: 20, // 横幅を制限
+                        height: 20, // 高さを制限
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.edit),
+                          padding: EdgeInsets.zero,
+                        )),
+                    SizedBox(width: 15), //アイコン同士の間のスペース確保
+                    SizedBox(
+                        width: 20, // 横幅を制限
+                        height: 20, // 高さを制限
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.delete),
+                          padding: EdgeInsets.zero,
+                        )),
+                  ],
+                ),
                 onTap: () {
-
                 },
               );
             },
