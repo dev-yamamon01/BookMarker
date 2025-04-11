@@ -60,6 +60,13 @@ class GenreEditScreen extends StatelessWidget {
                   ],
                 ),
                 onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return UpdateGenreScreen(
+                          genre: genre,
+                        );
+                      });
                 },
               );
             },
