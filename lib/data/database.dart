@@ -51,6 +51,27 @@ LazyDatabase _openConnection() {//SQLiteのデータベースファイルを開�
   });
 }
 
+Future<void> updateGenre(int genreId, String newGenreName) async {
+  AppDatabase db=AppDatabase();
+  await (db.update(db.genres)..where((tbl) => tbl.id.equals(genreId))).write(
+    GenresCompanion(
+      genreName: Value(newGenreName),
+    ),
+  );
+}
+
+Future<void> deleteGenre(int genreId) async {
+  AppDatabase db=AppDatabase();
+  await (db.delete(db.genres)..where((tbl) => tbl.id.equals(genreId)));
+}
+
+Future<void> insertGenre(String newGenreName) async {
+  AppDatabase db=AppDatabase();
+  await db.into(db.genres).insert(GenresCompanion(
+    genreName: Value(newGenreName)
+  ));
+}
+
 Future<List<Genre>> getGenre() async{
   AppDatabase db=AppDatabase();
   final query =db.select(db.genres);
