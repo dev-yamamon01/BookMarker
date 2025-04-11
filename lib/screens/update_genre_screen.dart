@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/utils/my_utils.dart';
 
 class UpdateGenreScreen extends StatefulWidget {
   const UpdateGenreScreen({super.key,required this.genre});
@@ -36,13 +37,18 @@ class _UpdateGenreScreenState extends State<UpdateGenreScreen> {
           ],
         ),
         actions: [
-          TextButton(
+          TextButton(//キャンセルボタン
           onPressed: () => Navigator.pop(context), // キャンセル
           style: TextButton.styleFrom(foregroundColor: Colors.grey), // ← 文字色
           child: Text("キャンセル"),
         ),
-          TextButton(
-          onPressed: () {},
+
+          TextButton(//更新するボタン
+          onPressed: () async{
+            await updateGenre(widget.genre.id, genreController.text);
+            showToastMessage(context, '更新しました');
+            Navigator.pop(context);
+          },
           style: TextButton.styleFrom(
             foregroundColor: Color(0xFFCC0000), // ← 文字色
             side: BorderSide(color: Color(0xFFCC0000), width: 1), // ← 枠線
