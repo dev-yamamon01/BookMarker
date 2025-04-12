@@ -43,8 +43,8 @@ class CategoryMoreScreen extends StatelessWidget {
         if (label == labelGenreAdd) {
           showDialog(
               context: context,
-              builder: (BuildContext context) {
-                return AddGenreScreen();
+              builder: (BuildContext dialogContext) {
+                return AddGenreScreen(parentContext: context,);
               });
         } else if (label == labelGenreEdit) {
 

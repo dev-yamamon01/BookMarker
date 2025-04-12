@@ -16,7 +16,6 @@ import 'package:bookmarker/router.dart';
 // ✅ グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
 final GlobalKey<MyHomePageState> globalKey = GlobalKey<MyHomePageState>();
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();//contextの受け渡しの都合上必要
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();  // Flutter の初期化を保証
@@ -95,7 +94,6 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scaffoldMessengerKey: scaffoldMessengerKey,
       home: Scaffold(
         key: _scaffoldKey,//Keyを設定すると別のファイルからscaffoldの状態を取得・操作できる
         drawer: MyDrawer(),

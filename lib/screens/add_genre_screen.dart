@@ -4,7 +4,8 @@ import 'package:bookmarker/data/database.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 
 class AddGenreScreen extends StatefulWidget {
-  const AddGenreScreen({super.key});
+  const AddGenreScreen({super.key,required this.parentContext});
+  final BuildContext parentContext;
 
   @override
   State<AddGenreScreen> createState() => _AddGenreScreenState();
@@ -40,7 +41,7 @@ class _AddGenreScreenState extends State<AddGenreScreen> {
           onPressed: () async{
 
             await insertGenre(genreController.text);
-            showToastMessage(context ,'追加しました');
+            showToastMessage(widget.parentContext ,'追加しました');
             Navigator.pop(context);
 
           },
