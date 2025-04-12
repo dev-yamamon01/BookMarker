@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:bookmarker/main.dart';
 
 void showToastMessage(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
+  scaffoldMessengerKey.currentState?.showSnackBar(//contextの受け渡しの都合上必要
     SnackBar(
       content: Text(
           message,

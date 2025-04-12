@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:bookmarker/main.dart';
 import 'package:bookmarker/screens/genre_edit_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bookmarker/screens/add_genre_screen.dart';
+import 'package:bookmarker/utils/my_utils.dart';
 
 //最後のタブのカテゴリー編集機能のUIを返す
 class CategoryMoreScreen extends StatelessWidget {
@@ -39,6 +41,11 @@ class CategoryMoreScreen extends StatelessWidget {
       ),
       onPressed: () {
         if (label == labelGenreAdd) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AddGenreScreen();
+              });
         } else if (label == labelGenreEdit) {
 
           context.push('/genreEdit');
