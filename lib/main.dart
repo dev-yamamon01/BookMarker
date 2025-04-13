@@ -62,6 +62,7 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<Url>? genre1Urls,genre2Urls,genre3Urls,top3Urls;
+  Map<int,List<Url>?> genreMap={};
 
   @override
   void initState() {
@@ -78,11 +79,19 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
 
   // データを読み込む
   Future<void> loadItems() async {
+    List<Genre> genres = await getGenre();
+
+    for (int i = 1; i <= genres.length; i++) {
+      int genreId = genres[i - 1].id;
+      genreMap[genreId] = await getUrl(genreId);
+    }
 
       //top3Urls=await getUrl(database, 0);
-      genre1Urls=await getUrl(1);
-      genre2Urls=await getUrl(2);
-      genre3Urls=await getUrl(3);
+
+    //genreMapの数分のTabViewを作成し、CategoryListView(urls: genre1Urls)に動的に代入するようにする
+      genre1Urls=genreMap[1];
+      genre2Urls=genreMap[2];
+      genre3Urls=genreMap[3];
 
       setState(() {
         //これがないとUI更新されないので注意
