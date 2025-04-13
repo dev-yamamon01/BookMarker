@@ -62,7 +62,7 @@ Future<void> updateGenre(int genreId, String newGenreName) async {
 
 Future<void> deleteGenre(int genreId) async {
   AppDatabase db=AppDatabase();
-  await (db.delete(db.genres)..where((tbl) => tbl.id.equals(genreId)));
+  await (db.delete(db.genres)..where((tbl) => tbl.id.equals(genreId))).go();
 }
 
 Future<void> insertGenre(String newGenreName) async {

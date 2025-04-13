@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bookmarker/data/database.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bookmarker/screens/update_genre_screen.dart';
+import 'package:bookmarker/utils/my_utils.dart';
 
 final AppDatabase db = AppDatabase();
 
@@ -53,7 +54,14 @@ class GenreEditScreen extends StatelessWidget {
                         width: 20, // 横幅を制限
                         height: 20, // 高さを制限
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDeleteDialog(context, 'このジャンルを削除しますか？',
+                                '※削除したジャンルに該当するURLがある場合は自動的にジャンル未選択に変更されます',
+                                () async {
+                                  await deleteGenre(genre.id);
+                                  showToastMessage(context, '削除しました');
+                            });
+                          },
                           icon: Icon(Icons.delete),
                           padding: EdgeInsets.zero,
                         )),
