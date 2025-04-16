@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:bookmarker/data/database.dart';
 
 //AppBarには高さの制限があるため、TabBarは高さを自動的に決める必要があるが
 //StatelessWidgetはサイズの情報をも持たないのでkToolbarHeight(AppBarの高さ)を伝える
 class MyTabBar extends StatelessWidget implements PreferredSizeWidget{
   final TabController tabController;
+  final Map<int,List<Url>?> genreMap;
 
-  const MyTabBar({super.key,required this.tabController});
+  const MyTabBar({super.key,required this.tabController,required this.genreMap});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +29,9 @@ class MyTabBar extends StatelessWidget implements PreferredSizeWidget{
       ),
       unselectedLabelStyle: TextStyle(fontSize: 10),
       tabs: [
-        Tab(icon: Icon(Icons.star), text: "トップ3",height: 60,),
-        Tab(text: 'ジャンル1',height: 40,),
-        Tab(text: "ジャンル2",height: 40,),
-        Tab(text: "ジャンル3",height: 40,),
+        ...genreMap.entries.map((entry) {
+          return Tab(text: entry.key.toString() ?? "",height: 40,);
+        }).toList(),
         Tab(icon: Icon(Icons.more_horiz),height: 40,),
       ],
     );

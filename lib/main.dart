@@ -67,8 +67,9 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    //_tabController = TabController(length: 5, vsync: this);
     loadItems();
+    _tabController = TabController(length: 11, vsync: this);
   }
 
   @override
@@ -81,22 +82,28 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
   Future<void> loadItems() async {
     List<Genre> genres = await getGenre();
 
+    genreMap[0]=await getAllUrl();//全てのURLを取得
+
     for (int i = 1; i <= genres.length; i++) {
-      int genreId = genres[i - 1].id;
-      genreMap[genreId] = await getUrl(genreId);
+      int genreId = genres[i - 1].id;//genresテーブルからgenreIdを取得
+      genreMap[genreId] = await getUrl(genreId);//genreIdをKeyとし、Urlsテーブルにあるレコードうち、のgenreIdがkeyと同じものをList型でvalueとする
     }
+
+    print('ジャンルの数は');
+    print(genreMap.length);
+    print('ジャンルマップの中身は');
+    print(genreMap.toString());
 
       //top3Urls=await getUrl(database, 0);
 
     //genreMapの数分のTabViewを作成し、CategoryListView(urls: genre1Urls)に動的に代入するようにする
-      genre1Urls=genreMap[1];
-      genre2Urls=genreMap[2];
-      genre3Urls=genreMap[3];
+    //   genre1Urls=genreMap[1];
+    //   genre2Urls=genreMap[2];
+    //   genre3Urls=genreMap[3];
 
       setState(() {
         //これがないとUI更新されないので注意
       });
-
   }
 
 
@@ -112,17 +119,24 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
             widgetTitle: widget.title,
             scaffoldKey: _scaffoldKey,
           ),
-          bottom: MyTabBar(tabController: _tabController),
+          bottom: MyTabBar(tabController: _tabController,genreMap: genreMap,),
         ),
         body: TabBarView(
             controller: _tabController, // コントローラーを指定
-            children: [
-              CategoryListView(urls: genre1Urls),
-              CategoryListView(urls: genre1Urls),
-              CategoryListView(urls: genre2Urls),
-              CategoryListView(urls: genre3Urls),
+            children:[
+            ...genreMap.entries.map((entry) {
+              return CategoryListView(urls: entry.value ?? []);
+            }).toList(),
               CategoryMoreScreen(),
-            ]),
+            ]
+            //[
+              // CategoryListView(urls: genre1Urls),
+              // CategoryListView(urls: genre1Urls),
+              // CategoryListView(urls: genre2Urls),
+              // CategoryListView(urls: genre3Urls),
+              //CategoryMoreScreen(),
+            //]
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed:(){
             //showInputDialog(context);

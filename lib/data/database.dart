@@ -88,6 +88,14 @@ Future<List<Url>?> getUrl(int genreId) async{
   return result;
 }
 
+Future<List<Url>?> getAllUrl() async{
+  AppDatabase db=AppDatabase();
+  final query =db.select(db.urls);
+
+  final result = await query.get();
+  return result;
+}
+
 //以下のメソッドはテーブル定義の.references(SubTitles, #id)();を使うともっと綺麗に書けるかも？
 Future<String?> getSubtitleName(int subTitleId) async{
 
