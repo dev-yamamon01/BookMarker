@@ -82,6 +82,7 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
 
   // データを読み込む
   Future<void> loadItems() async {
+
     List<Genre> genres = await getGenre();
 
     genreMap[0]=await getAllUrl();//全てのURLを取得
