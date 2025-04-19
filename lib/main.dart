@@ -13,6 +13,8 @@ import 'package:bookmarker/screens/genre_edit_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bookmarker/router.dart';
 import 'package:bookmarker/utils/my_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:bookmarker/providers/url_provider.dart';
 
 // ✅ グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
@@ -20,10 +22,10 @@ final GlobalKey<MyHomePageState> globalKey = GlobalKey<MyHomePageState>();
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();  // Flutter の初期化を保証
-  //databaseFactory = databaseFactoryFfi;
   print("Database is open: ${database.executor.ensureOpen(database)}"); // DBが開かれているかチェック
-  //await DatabaseHelper.getDatabase();  // DB を事前に初期化(これを2回呼んでしまうとDBエラーが発生するので注意)
-  runApp(const MyApp());
+
+  // runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 
@@ -35,31 +37,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: router,//router.dartで定義している変数
     );
-    // return MaterialApp(
-    //   title: 'Book Maker',
-    //   theme: ThemeData(
-    //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-    //     useMaterial3: true,
-    //   ),
-    //   home: const MyHomePage(title: 'Book Maker'),
-    //   //以下を定義してNavigator.pushNamed(context, '/genreEdit');でcategory_more_screenで試行したがうまくいかない
-    //   routes: {
-    //     '/genreEdit':(context) => GenreEditScreen()
-    //   },
-    // );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
 
   @override
-  State<MyHomePage> createState() => MyHomePageState();
+  ConsumerState<MyHomePage> createState() => MyHomePageState();
 }
 
-class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProviderStateMixin {
+  TabController? _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<Url>? genre1Urls,genre2Urls,genre3Urls,top3Urls;
@@ -69,14 +59,13 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
   @override
   void initState() {
     super.initState();
-    //_tabController = TabController(length: 5, vsync: this);//デフォルトは5=(ジャンルx3+more+全ジャンル)
-    loadItems();
-    //_tabController = TabController(length: 5, vsync: this);//genreMap.length+1をlengthに入れたい
+    //_tabController = TabController(length: 5, vsync: this);//デフォルト
+    //loadItems();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController?.dispose();
     super.dispose();
   }
 
@@ -92,81 +81,132 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
       genreMap[genreId] = await getUrl(genreId);//genreIdをKeyとし、Urlsテーブルにあるレコードうち、のgenreIdがkeyと同じものをList型でvalueとする
     }
 
-    print('ジャンルの数は');
-    print(genreMap.length);
-    print('ジャンルマップの中身は');
-    print(genreMap.toString());
-
-      //top3Urls=await getUrl(database, 0);
-
-    //genreMapの数分のTabViewを作成し、CategoryListView(urls: genre1Urls)に動的に代入するようにする
-    //   genre1Urls=genreMap[1];
-    //   genre2Urls=genreMap[2];
-    //   genre3Urls=genreMap[3];
-
       setState(() {
         //これがないとUI更新されないので注意
-        _tabController = TabController(length: genreMap.length+1, vsync: this);
+        _tabController = TabController(length: genreMap.length+1, vsync: this);//lenghtのデフォルトは5=(ジャンルx3+more+全ジャンル)
         isItemLoaded = true;
       });
 
   }
 
-
   @override
   Widget build(BuildContext context) {
-    if (!isItemLoaded) {
-      return Scaffold(
-        body: Center(child: CircularProgressIndicator(color: MyColors.primary,)),
-      );
-    }
-    return MaterialApp(
-      home: Scaffold(
-        key: _scaffoldKey,//Keyを設定すると別のファイルからscaffoldの状態を取得・操作できる
-        drawer: MyDrawer(),
-        appBar: AppBar(
-          automaticallyImplyLeading: false, // デフォルトのハンバーガーメニューを削除
-          title: MyAppbar(
-            widgetTitle: widget.title,
-            scaffoldKey: _scaffoldKey,
+    final genreMapAsync = ref.watch(urlMapProvider);
+
+    return genreMapAsync.when(
+      data: (genreMap) {
+        final tabCount = genreMap.length + 1;
+
+        // 安全な再生成
+        if (_tabController == null || _tabController!.length != tabCount) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _tabController?.dispose();
+            setState(() {
+              _tabController = TabController(length: tabCount, vsync: this);
+            });
+          });
+        }
+
+        if (_tabController == null) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        return MaterialApp(
+          home: Scaffold(
+            key: _scaffoldKey,//Keyを設定すると別のファイルからscaffoldの状態を取得・操作できる
+            drawer: MyDrawer(),
+            appBar: AppBar(
+              automaticallyImplyLeading: false, // デフォルトのハンバーガーメニューを削除
+              title: MyAppbar(
+                widgetTitle: widget.title,
+                scaffoldKey: _scaffoldKey,
+              ),
+              bottom: MyTabBar(tabController: _tabController,genreMap: genreMap,),
+            ),
+            body: TabBarView(
+                controller: _tabController, // コントローラーを指定
+                children:[
+                  ...genreMap.entries.map((entry) {
+                    return CategoryListView(urls: entry.value ?? []);
+                  }).toList(),
+                  CategoryMoreScreen(),
+                ]
+
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed:(){
+                //showInputDialog(context);
+                showDialog(context: context, builder: (BuildContext context) {
+                  // return AddUrlScreen(
+                  //     onConfirm:() async{
+                  //       await loadItems();//新規でURLを追加したらタイミングでロードするために関数を渡す
+                  //     }
+                  // );
+                  return AddUrlScreen();
+                },
+                );
+              },
+              backgroundColor: MyColors.secondary,
+              child: Icon(Icons.add,color: Colors.white,),
+            ),
           ),
-          bottom: MyTabBar(tabController: _tabController,genreMap: genreMap,),
-        ),
-        body: TabBarView(
-            controller: _tabController, // コントローラーを指定
-            children:[
-            ...genreMap.entries.map((entry) {
-              return CategoryListView(urls: entry.value ?? []);
-            }).toList(),
-              CategoryMoreScreen(),
-            ]
-            //[
-              // CategoryListView(urls: genre1Urls),
-              // CategoryListView(urls: genre1Urls),
-              // CategoryListView(urls: genre2Urls),
-              // CategoryListView(urls: genre3Urls),
-              //CategoryMoreScreen(),
-            //]
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed:(){
-            //showInputDialog(context);
-            showDialog(context: context, builder: (BuildContext context) {
-              return AddUrlScreen(
-                onConfirm:() async{
-                  await loadItems();//新規でURLを追加したらタイミングでロードするために関数を渡す
-                }
-              );
-              //return AddUrlScreen(); // AddUrlScreen をダイアログとして表示
-            },
-            );
-          },
-          backgroundColor: MyColors.secondary,
-          child: Icon(Icons.add,color: Colors.white,),
-        ),
-      ),
+        );
+      },
+      loading: () => Center(child: CircularProgressIndicator()),
+      error: (e, st) => Center(child: Text("エラー: $e")),
     );
   }
+
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   if (!isItemLoaded) {
+  //     return Scaffold(
+  //       body: Center(child: CircularProgressIndicator(color: MyColors.primary,)),
+  //     );
+  //   }
+  //   return MaterialApp(
+  //     home: Scaffold(
+  //       key: _scaffoldKey,//Keyを設定すると別のファイルからscaffoldの状態を取得・操作できる
+  //       drawer: MyDrawer(),
+  //       appBar: AppBar(
+  //         automaticallyImplyLeading: false, // デフォルトのハンバーガーメニューを削除
+  //         title: MyAppbar(
+  //           widgetTitle: widget.title,
+  //           scaffoldKey: _scaffoldKey,
+  //         ),
+  //         bottom: MyTabBar(tabController: _tabController,genreMap: genreMap,),
+  //       ),
+  //       body: TabBarView(
+  //           controller: _tabController, // コントローラーを指定
+  //           children:[
+  //           ...genreMap.entries.map((entry) {
+  //             return CategoryListView(urls: entry.value ?? []);
+  //           }).toList(),
+  //             CategoryMoreScreen(),
+  //           ]
+  //
+  //       ),
+  //       floatingActionButton: FloatingActionButton(
+  //         onPressed:(){
+  //           //showInputDialog(context);
+  //           showDialog(context: context, builder: (BuildContext context) {
+  //             return AddUrlScreen(
+  //               onConfirm:() async{
+  //                 await loadItems();//新規でURLを追加したらタイミングでロードするために関数を渡す
+  //               }
+  //             );
+  //           },
+  //           );
+  //         },
+  //         backgroundColor: MyColors.secondary,
+  //         child: Icon(Icons.add,color: Colors.white,),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 

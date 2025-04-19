@@ -14,8 +14,7 @@ import 'package:drift/drift.dart' as drift;
 final AppDatabase database = AppDatabase();
 
 class AddUrlScreen extends StatefulWidget {
-  final Future<void> Function() onConfirm;
-  const AddUrlScreen({super.key,required this.onConfirm});
+  const AddUrlScreen({super.key});
 
   @override
   State<AddUrlScreen> createState() => _AddUrlScreenState();
@@ -238,8 +237,6 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
 
                     Navigator.pop(context); // ダイアログを閉じる
 
-                  //ここでアイテムを再度読込みたい
-                    await widget.onConfirm();
 
                 }:null,
                 child: Text("登録"),
