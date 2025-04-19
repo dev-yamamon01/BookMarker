@@ -63,13 +63,14 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
 
   List<Url>? genre1Urls,genre2Urls,genre3Urls,top3Urls;
   Map<int,List<Url>?> genreMap={};
+  bool isItemLoaded=false;
 
   @override
   void initState() {
     super.initState();
-    //_tabController = TabController(length: 5, vsync: this);
+    //_tabController = TabController(length: 5, vsync: this);//デフォルトは5=(ジャンルx3+more+全ジャンル)
     loadItems();
-    _tabController = TabController(length: 11, vsync: this);
+    //_tabController = TabController(length: 5, vsync: this);//genreMap.length+1をlengthに入れたい
   }
 
   @override
@@ -103,12 +104,20 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
 
       setState(() {
         //これがないとUI更新されないので注意
+        _tabController = TabController(length: genreMap.length+1, vsync: this);
+        isItemLoaded = true;
       });
+
   }
 
 
   @override
   Widget build(BuildContext context) {
+    if (!isItemLoaded) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,//Keyを設定すると別のファイルからscaffoldの状態を取得・操作できる
