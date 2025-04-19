@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bookmarker/main.dart';
+import 'package:bookmarker/utils/my_colors.dart';
 
 void showToastMessage(BuildContext context, String message) {
    ScaffoldMessenger.of(context).showSnackBar(
@@ -7,7 +8,7 @@ void showToastMessage(BuildContext context, String message) {
       content: Text(
           message,
       style: TextStyle(
-          color: Color(0xFFCC0000),
+          color: MyColors.primary,
       ),),
       duration: Duration(seconds: 2),
       backgroundColor: Colors.white,
@@ -26,7 +27,7 @@ void showDeleteDialog(BuildContext context,String title ,String message ,VoidCal
       title: Text(
           title,
         style: TextStyle(
-          color: Color(0xFFCC0000),
+          color: MyColors.primary,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -43,8 +44,8 @@ void showDeleteDialog(BuildContext context,String title ,String message ,VoidCal
           },
           style: TextButton.styleFrom(
             foregroundColor: Colors.white, // ← 文字色
-            backgroundColor: Color(0xFFCC0000),
-            side: BorderSide(color: Color(0xFFCC0000), width: 1), // ← 枠線
+            backgroundColor: MyColors.primary,
+            side: BorderSide(color: MyColors.primary, width: 1), // ← 枠線
             shape: RoundedRectangleBorder(
               // ← 枠の角を丸く
               borderRadius: BorderRadius.circular(8),

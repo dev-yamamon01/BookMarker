@@ -12,6 +12,7 @@ import 'package:bookmarker/data/models/tables.dart';
 import 'package:bookmarker/screens/genre_edit_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bookmarker/router.dart';
+import 'package:bookmarker/utils/my_colors.dart';
 
 // ✅ グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
@@ -115,7 +116,7 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
   Widget build(BuildContext context) {
     if (!isItemLoaded) {
       return Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: CircularProgressIndicator(color: MyColors.primary,)),
       );
     }
     return MaterialApp(
@@ -159,7 +160,7 @@ class MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMi
             },
             );
           },
-          backgroundColor: Color(0xAACC0000),
+          backgroundColor: MyColors.secondary,
           child: Icon(Icons.add,color: Colors.white,),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:bookmarker/screens/genre_edit_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bookmarker/screens/add_genre_screen.dart';
 import 'package:bookmarker/utils/my_utils.dart';
+import 'package:bookmarker/utils/my_colors.dart';
 
 //最後のタブのカテゴリー編集機能のUIを返す
 class CategoryMoreScreen extends StatelessWidget {
@@ -22,10 +23,10 @@ class CategoryMoreScreen extends StatelessWidget {
         mainAxisSpacing: 20, // 縦方向の間隔
         crossAxisSpacing: 20, // 横方向の間隔
         children: [
-          _buildButton(Icon(Icons.add_circle_rounded,size: 40, color: Colors.white), labelGenreAdd,Color(0xAACC0000),context),
-          _buildButton(Icon(Icons.edit_note_sharp,size: 40, color: Colors.white), labelGenreEdit, Color(0xAACC0000),context),
-          _buildButton(SvgPicture.asset('assets/domain.svg',width: 40, height: 40), labelDomainEdit, Color(0xAACC0000),context),
-          _buildButton(Icon(Icons.settings,size: 40, color: Colors.white), labelSetting, Color(0xAACC0000),context),
+          _buildButton(Icon(Icons.add_circle_rounded,size: 40, color: Colors.white), labelGenreAdd,MyColors.secondary,context),
+          _buildButton(Icon(Icons.edit_note_sharp,size: 40, color: Colors.white), labelGenreEdit, MyColors.secondary,context),
+          _buildButton(SvgPicture.asset('assets/domain.svg',width: 40, height: 40), labelDomainEdit, MyColors.secondary,context),
+          _buildButton(Icon(Icons.settings,size: 40, color: Colors.white), labelSetting, MyColors.secondary,context),
         ],
       ),);
 

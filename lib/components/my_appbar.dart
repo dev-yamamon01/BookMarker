@@ -5,6 +5,7 @@ import 'package:bookmarker/data/database.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:bookmarker/utils/my_colors.dart';
 
 
 class MyAppbar extends StatelessWidget {
@@ -30,7 +31,7 @@ class MyAppbar extends StatelessWidget {
             Text('  '),
             Text(
               widgetTitle,
-              style: TextStyle(color: Color(0xFFCC0000) //AARRGGBB形式のHex
+              style: TextStyle(color: MyColors.primary
               ),
             )
           ]),

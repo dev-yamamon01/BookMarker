@@ -3,6 +3,7 @@ import 'package:bookmarker/data/database.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bookmarker/screens/update_genre_screen.dart';
 import 'package:bookmarker/utils/my_utils.dart';
+import 'package:bookmarker/utils/my_colors.dart';
 
 final AppDatabase db = AppDatabase();
 
@@ -18,7 +19,7 @@ class GenreEditScreen extends StatelessWidget {
         stream: db.select(db.genres).watch(), // 常に最新のデータを取得
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: MyColors.primary,));
           }
 
           final genres = snapshot.data!;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:bookmarker/utils/my_colors.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -11,14 +12,14 @@ class MyDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
               decoration: BoxDecoration(
-                  color: Color(0xAAFFFFFF),
+                  color: MyColors.background,
                   borderRadius: BorderRadius.circular(16.0)),
               child: Column(
                 children: [
                   Text('Book Maker',
                     style: TextStyle(
                         fontSize: 30,
-                        color: Color(0xFFCC0000)
+                        color: MyColors.primary
                     ),
                   ),
                   SvgPicture.asset('assets/bookmark.svg', width: 80, height: 80)],

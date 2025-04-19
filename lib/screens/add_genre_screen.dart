@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:bookmarker/data/database.dart';
 import 'package:bookmarker/utils/my_utils.dart';
+import 'package:bookmarker/utils/my_colors.dart';
 
 class AddGenreScreen extends StatefulWidget {
   const AddGenreScreen({super.key,required this.parentContext});
@@ -46,8 +47,8 @@ class _AddGenreScreenState extends State<AddGenreScreen> {
 
           },
           style: TextButton.styleFrom(
-            foregroundColor: Color(0xFFCC0000), // ← 文字色
-            side: BorderSide(color: Color(0xFFCC0000), width: 1), // ← 枠線
+            foregroundColor: MyColors.primary, // ← 文字色
+            side: BorderSide(color: MyColors.primary, width: 1), // ← 枠線
             shape: RoundedRectangleBorder(
               // ← 枠の角を丸く
               borderRadius: BorderRadius.circular(8),

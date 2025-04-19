@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/utils/my_colors.dart';
 
 //AppBarには高さの制限があるため、TabBarは高さを自動的に決める必要があるが
 //StatelessWidgetはサイズの情報をも持たないのでkToolbarHeight(AppBarの高さ)を伝える
@@ -17,14 +18,14 @@ class MyTabBar extends StatelessWidget implements PreferredSizeWidget{
       indicator: BoxDecoration(
         color: Colors.grey.withOpacity(0.1), // 背景色（タブの背景全体に適用）
         border: Border(
-          bottom: BorderSide(color: Color(0xFFCC0000), width: 4), // 下線のカスタマイズ
+          bottom: BorderSide(color: MyColors.primary, width: 4), // 下線のカスタマイズ
         ),
       ),
       indicatorSize: TabBarIndicatorSize.tab, // ラベルのサイズに合わせたインジケーター,
       labelStyle: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.bold,
-        color: Color(0xFFCC0000),
+        color: MyColors.primary,
 
       ),
       unselectedLabelStyle: TextStyle(fontSize: 10),
