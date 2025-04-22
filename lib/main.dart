@@ -48,7 +48,7 @@ class MyHomePage extends ConsumerStatefulWidget {
   ConsumerState<MyHomePage> createState() => MyHomePageState();
 }
 
-class MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProviderStateMixin {
+class MyHomePageState extends ConsumerState<MyHomePage> with TickerProviderStateMixin {//元々はwith SingleTickerProviderStateMixin
   TabController? _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -70,24 +70,24 @@ class MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvide
   }
 
   // データを読み込む
-  Future<void> loadItems() async {
-
-    List<Genre> genres = await getGenre();
-
-    genreMap[0]=await getAllUrl();//全てのURLを取得
-
-    for (int i = 1; i <= genres.length; i++) {
-      int genreId = genres[i - 1].id;//genresテーブルからgenreIdを取得
-      genreMap[genreId] = await getUrl(genreId);//genreIdをKeyとし、Urlsテーブルにあるレコードうち、のgenreIdがkeyと同じものをList型でvalueとする
-    }
-
-      setState(() {
-        //これがないとUI更新されないので注意
-        _tabController = TabController(length: genreMap.length+1, vsync: this);//lenghtのデフォルトは5=(ジャンルx3+more+全ジャンル)
-        isItemLoaded = true;
-      });
-
-  }
+  // Future<void> loadItems() async {
+  //
+  //   List<Genre> genres = await getGenre();
+  //
+  //   genreMap[0]=await getAllUrl();//全てのURLを取得
+  //
+  //   for (int i = 1; i <= genres.length; i++) {
+  //     int genreId = genres[i - 1].id;//genresテーブルからgenreIdを取得
+  //     genreMap[genreId] = await getUrl(genreId);//genreIdをKeyとし、Urlsテーブルにあるレコードうち、のgenreIdがkeyと同じものをList型でvalueとする
+  //   }
+  //
+  //     setState(() {
+  //       //これがないとUI更新されないので注意
+  //       _tabController = TabController(length: genreMap.length+1, vsync: this);//lenghtのデフォルトは5=(ジャンルx3+more+全ジャンル)
+  //       isItemLoaded = true;
+  //     });
+  //
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +97,7 @@ class MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvide
       data: (genreMap) {
         final tabCount = genreMap.length + 1;
 
-        // 安全な再生成
+        // // TabControllerが未初期化、またはジャンル数が変わったら再作成
         if (_tabController == null || _tabController!.length != tabCount) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _tabController?.dispose();
@@ -105,13 +105,11 @@ class MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvide
               _tabController = TabController(length: tabCount, vsync: this);
             });
           });
-        }
-
-        if (_tabController == null) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
+
 
         return MaterialApp(
           home: Scaffold(
