@@ -5,7 +5,7 @@ import 'package:bookmarker/utils/my_colors.dart';
 //AppBarには高さの制限があるため、TabBarは高さを自動的に決める必要があるが
 //StatelessWidgetはサイズの情報をも持たないのでkToolbarHeight(AppBarの高さ)を伝える
 class MyTabBar extends StatelessWidget implements PreferredSizeWidget{
-  final TabController tabController;
+  final TabController? tabController;
   final Map<int,List<Url>?> genreMap;
 
   const MyTabBar({super.key,required this.tabController,required this.genreMap});
