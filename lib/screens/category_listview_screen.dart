@@ -61,8 +61,21 @@ class CategoryListView extends StatelessWidget {
                         constraints: BoxConstraints(),
                       )),
                 ],
-              ));
+              ),
+              onTap: (){
+                //ここでリンクにプライベートブラウザで飛んで、アクセス数更新する
+                openBrowser(urls![index].domainId,urls?[index].directory ?? "");
+
+                }
+              ,
+          );
         }
     );
   }
+
+  void openBrowser(int domainId,String directory)async{
+    final accessUrl=await getAccessUrl(domainId, directory);
+    print(accessUrl);
+  }
+
 }

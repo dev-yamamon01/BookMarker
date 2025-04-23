@@ -51,6 +51,15 @@ LazyDatabase _openConnection() {//SQLiteのデータベースファイルを開�
   });
 }
 
+Future<String?> getAccessUrl(int domainId,String directory) async{
+  AppDatabase db=AppDatabase();
+  final query =db.select(db.domains)..where((tbl) => tbl.id.equals(domainId));
+  final result = await query.getSingleOrNull();
+  String? domainName=result?.domainName;
+
+  return "https://$domainName/$directory";
+}
+
 Future<void> updateGenre(int genreId, String newGenreName) async {
   AppDatabase db=AppDatabase();
   await (db.update(db.genres)..where((tbl) => tbl.id.equals(genreId))).write(
