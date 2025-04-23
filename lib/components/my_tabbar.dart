@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:bookmarker/data/database.dart';
 import 'package:bookmarker/utils/my_colors.dart';
+import 'package:bookmarker/data/models/urls_by_genre_name.dart';
 
 //AppBarには高さの制限があるため、TabBarは高さを自動的に決める必要があるが
 //StatelessWidgetはサイズの情報をも持たないのでkToolbarHeight(AppBarの高さ)を伝える
 class MyTabBar extends StatelessWidget implements PreferredSizeWidget{
   final TabController? tabController;
-  final Map<int,List<Url>?> genreMap;
+  final Map<int,UrlsByGenreName?> genreMap;
 
   const MyTabBar({super.key,required this.tabController,required this.genreMap});
 
   @override
   Widget build(BuildContext context) {
     return TabBar(
+      labelPadding: EdgeInsets.symmetric(horizontal: 1.0),
       controller: tabController, // カスタムコントローラーを指定
       overlayColor: MaterialStateProperty.all(Colors.transparent), // リップルエフェクトを非表示
       indicator: BoxDecoration(
@@ -23,15 +25,18 @@ class MyTabBar extends StatelessWidget implements PreferredSizeWidget{
       ),
       indicatorSize: TabBarIndicatorSize.tab, // ラベルのサイズに合わせたインジケーター,
       labelStyle: TextStyle(
-        fontSize: 12,
+        fontSize: 10,
         fontWeight: FontWeight.bold,
         color: MyColors.primary,
 
       ),
-      unselectedLabelStyle: TextStyle(fontSize: 10),
+      unselectedLabelStyle: TextStyle(fontSize: 8),
       tabs: [
         ...genreMap.entries.map((entry) {
-          return Tab(text: entry.key.toString() ?? "",height: 40,);
+          return Tab(
+            text: entry.value?.name ?? "",
+            height: 40,
+          );//ここでジャンル名を表示
         }).toList(),
         Tab(icon: Icon(Icons.more_horiz),height: 40,),
       ],
