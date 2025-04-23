@@ -15,6 +15,7 @@ import 'package:bookmarker/router.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bookmarker/providers/url_provider.dart';
+import 'package:bookmarker/data/models/urls_by_genre_name.dart';
 
 // ✅ グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
@@ -53,7 +54,7 @@ class MyHomePageState extends ConsumerState<MyHomePage> with TickerProviderState
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<Url>? genre1Urls,genre2Urls,genre3Urls,top3Urls;
-  Map<int,List<Url>?> genreMap={};
+  //Map<int,UrlsByGenreName?> genreMap={};
   bool isItemLoaded=false;
 
   @override
@@ -127,7 +128,7 @@ class MyHomePageState extends ConsumerState<MyHomePage> with TickerProviderState
                 controller: _tabController, // コントローラーを指定
                 children:[
                   ...genreMap.entries.map((entry) {
-                    return CategoryListView(urls: entry.value ?? []);
+                    return CategoryListView(urls: entry.value.urls ?? []);
                   }).toList(),
                   CategoryMoreScreen(),
                 ]
