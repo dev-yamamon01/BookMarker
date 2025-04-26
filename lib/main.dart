@@ -25,7 +25,6 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();  // Flutter の初期化を保証
   print("Database is open: ${database.executor.ensureOpen(database)}"); // DBが開かれているかチェック
 
-  // runApp(const MyApp());
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -53,15 +52,11 @@ class MyHomePageState extends ConsumerState<MyHomePage> with TickerProviderState
   TabController? _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<Url>? genre1Urls,genre2Urls,genre3Urls,top3Urls;
-  //Map<int,UrlsByGenreName?> genreMap={};
   bool isItemLoaded=false;
 
   @override
   void initState() {
     super.initState();
-    //_tabController = TabController(length: 5, vsync: this);//デフォルト
-    //loadItems();
   }
 
   @override
@@ -69,26 +64,6 @@ class MyHomePageState extends ConsumerState<MyHomePage> with TickerProviderState
     _tabController?.dispose();
     super.dispose();
   }
-
-  // データを読み込む
-  // Future<void> loadItems() async {
-  //
-  //   List<Genre> genres = await getGenre();
-  //
-  //   genreMap[0]=await getAllUrl();//全てのURLを取得
-  //
-  //   for (int i = 1; i <= genres.length; i++) {
-  //     int genreId = genres[i - 1].id;//genresテーブルからgenreIdを取得
-  //     genreMap[genreId] = await getUrl(genreId);//genreIdをKeyとし、Urlsテーブルにあるレコードうち、のgenreIdがkeyと同じものをList型でvalueとする
-  //   }
-  //
-  //     setState(() {
-  //       //これがないとUI更新されないので注意
-  //       _tabController = TabController(length: genreMap.length+1, vsync: this);//lenghtのデフォルトは5=(ジャンルx3+more+全ジャンル)
-  //       isItemLoaded = true;
-  //     });
-  //
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -136,13 +111,7 @@ class MyHomePageState extends ConsumerState<MyHomePage> with TickerProviderState
             ),
             floatingActionButton: FloatingActionButton(
               onPressed:(){
-                //showInputDialog(context);
                 showDialog(context: context, builder: (BuildContext context) {
-                  // return AddUrlScreen(
-                  //     onConfirm:() async{
-                  //       await loadItems();//新規でURLを追加したらタイミングでロードするために関数を渡す
-                  //     }
-                  // );
                   return AddUrlScreen();
                 },
                 );
@@ -157,55 +126,6 @@ class MyHomePageState extends ConsumerState<MyHomePage> with TickerProviderState
       error: (e, st) => Center(child: Text("エラー: $e")),
     );
   }
-
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   if (!isItemLoaded) {
-  //     return Scaffold(
-  //       body: Center(child: CircularProgressIndicator(color: MyColors.primary,)),
-  //     );
-  //   }
-  //   return MaterialApp(
-  //     home: Scaffold(
-  //       key: _scaffoldKey,//Keyを設定すると別のファイルからscaffoldの状態を取得・操作できる
-  //       drawer: MyDrawer(),
-  //       appBar: AppBar(
-  //         automaticallyImplyLeading: false, // デフォルトのハンバーガーメニューを削除
-  //         title: MyAppbar(
-  //           widgetTitle: widget.title,
-  //           scaffoldKey: _scaffoldKey,
-  //         ),
-  //         bottom: MyTabBar(tabController: _tabController,genreMap: genreMap,),
-  //       ),
-  //       body: TabBarView(
-  //           controller: _tabController, // コントローラーを指定
-  //           children:[
-  //           ...genreMap.entries.map((entry) {
-  //             return CategoryListView(urls: entry.value ?? []);
-  //           }).toList(),
-  //             CategoryMoreScreen(),
-  //           ]
-  //
-  //       ),
-  //       floatingActionButton: FloatingActionButton(
-  //         onPressed:(){
-  //           //showInputDialog(context);
-  //           showDialog(context: context, builder: (BuildContext context) {
-  //             return AddUrlScreen(
-  //               onConfirm:() async{
-  //                 await loadItems();//新規でURLを追加したらタイミングでロードするために関数を渡す
-  //               }
-  //             );
-  //           },
-  //           );
-  //         },
-  //         backgroundColor: MyColors.secondary,
-  //         child: Icon(Icons.add,color: Colors.white,),
-  //       ),
-  //     ),
-  //   );
-  // }
 }
 
 
