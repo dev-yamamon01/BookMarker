@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -87,6 +88,18 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
 
     });
 
+    _pasteClipboardText();
+
+  }
+
+  //クリップボードにあるテキストを取得してurlControllerのtextとして表示
+  Future<void> _pasteClipboardText() async {
+    final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    if (clipboardData != null) {
+      setState(() {
+        urlController.text = clipboardData.text ?? '';
+      });
+    }
   }
 
   Future<void>loadGenre()async{
