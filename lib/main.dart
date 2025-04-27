@@ -17,7 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bookmarker/providers/url_provider.dart';
 import 'package:bookmarker/data/models/urls_by_genre_name.dart';
 
-// ✅ グローバルにデータベースインスタンスを作成
+//  グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
 final GlobalKey<MyHomePageState> globalKey = GlobalKey<MyHomePageState>();
 

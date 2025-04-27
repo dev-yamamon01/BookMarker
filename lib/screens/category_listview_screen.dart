@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bookmarker/data/models/tables.dart';
 import 'package:bookmarker/data/database.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CategoryListView extends StatelessWidget {
   final List<Url>? urls;
@@ -75,7 +76,14 @@ class CategoryListView extends StatelessWidget {
 
   void openBrowser(int domainId,String directory)async{
     final accessUrl=await getAccessUrl(domainId, directory);
-    print(accessUrl);
+
+    final Uri _url = Uri.parse(accessUrl ?? "");
+    if (!await launchUrl(
+      _url,
+      mode: LaunchMode.externalApplication, // 外部ブラウザで開く
+    )) {
+      throw 'Could not launch $_url';
+    }
   }
 
 }
