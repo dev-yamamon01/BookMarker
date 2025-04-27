@@ -208,10 +208,11 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                 Container(
                   height: 200,
                   width: double.maxFinite,
-                  child: Image.network('https://salop.co.jp/wp-content/uploads/2021/04/flutter-logo-sharing.png'),
-                  //  child: WebViewWidget(
-                  //      controller: WebViewController()..loadRequest(Uri.parse(inputUrl)),
-                  //  ), // WebView を埋め込む(platformエラーをあとで解決する)
+                  //child: Image.network('https://salop.co.jp/wp-content/uploads/2021/04/flutter-logo-sharing.png'),
+                    child: WebViewWidget(
+                      controller: WebViewController()
+                        ..loadRequest(Uri.parse(urlController.text)), // URL読み込み
+                    ),
                 ),
               ],
             )
