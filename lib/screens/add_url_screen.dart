@@ -83,7 +83,6 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
           domain=extractDomainAndDir(urlController.text).domain;
           dir=extractDomainAndDir(urlController.text).dir;
           //domainText=urlController.text;
-          print(url);
         });
 
     });
@@ -118,6 +117,8 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isValidUrl = checkInputUrl(urlController.text);
+
     return AlertDialog(
             title: Text("URLを新規追加"),
             content: //ここに入力フォームを入れる
@@ -205,15 +206,18 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                   controller: commentController,
                   decoration: InputDecoration(hintText: "コメントを追加"),
                 ),
-                Container(
-                  height: 200,
-                  width: double.maxFinite,
+                Expanded(
                   //child: Image.network('https://salop.co.jp/wp-content/uploads/2021/04/flutter-logo-sharing.png'),
-                    child: WebViewWidget(
-                      controller: WebViewController()
-                        ..loadRequest(Uri.parse(urlController.text)), // URL読み込み
-                    ),
-                ),
+                  child: isValidUrl
+                ? WebViewWidget(
+                    controller: WebViewController()
+                      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                      ..loadRequest(Uri.parse(urlController.text)), // URL読み込み
+                  )
+                : Center(
+                    child: Text("無効なURLです"),
+                  ),
+          ),
               ],
             )
 
