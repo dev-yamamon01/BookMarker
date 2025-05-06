@@ -1,5 +1,11 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:bookmarker/utils/my_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -10,6 +16,8 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:bookmarker/data/database.dart';
 import 'package:bookmarker/main.dart';
 import 'package:drift/drift.dart' as drift;
+
+import 'package:permission_handler/permission_handler.dart';
 
 //グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
@@ -22,6 +30,8 @@ class AddUrlScreen extends StatefulWidget {
 }
 
 class _AddUrlScreenState extends State<AddUrlScreen> {
+
+  final GlobalKey _globalKey = GlobalKey();
 
   TextEditingController urlController = TextEditingController();
   TextEditingController commentController = TextEditingController();
@@ -206,19 +216,23 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                   controller: commentController,
                   decoration: InputDecoration(hintText: "コメントを追加"),
                 ),
-                Expanded(
-                  //child: Image.network('https://salop.co.jp/wp-content/uploads/2021/04/flutter-logo-sharing.png'),
-                  child: isValidUrl
-                ? WebViewWidget(
-                    controller: WebViewController()
-                      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                      ..loadRequest(Uri.parse(urlController.text)), // URL読み込み
-                  )
-                : Center(
-                    child: Text("無効なURLです"),
-                  ),
-          ),
-              ],
+                 Expanded(
+              //child: Image.network('https://salop.co.jp/wp-content/uploads/2021/04/flutter-logo-sharing.png'),
+              child: isValidUrl
+                  ?
+              RepaintBoundary(
+                  key: _globalKey,
+                  child: WebViewWidget(
+                      controller: WebViewController()
+                        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                        ..loadRequest(Uri.parse(urlController.text)), // URL読み込み
+                    )
+              )
+                  : Center(
+                      child: Text("無効なURLです"),
+                    ),
+            ),
+        ],
             )
 
 
@@ -233,15 +247,11 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                 ?() async {
                   //url = urlController.text;
                     //await _dbHelper.insertUrl(inputUrl); // DBへ登録
-                    print("DBに登録:以下内容");
+                    print("DB登録処理実行");
                     print("----------------------");
-                    print(url);
-                    print(domain);
-                    print(titleController.text);
-                    print(subTitleController.text);
-                    print(evaluation);
-                    print(commentController.text);
-                    print("----------------------");
+
+                    final saveImagePath=await _captureAndSave();
+
                     insertUrl(
                         UrlsCompanion(
                           directory: drift.Value(dir ?? ""),
@@ -249,7 +259,7 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                           title: drift.Value(titleController.text),
                           evaluation: drift.Value(evaluation),
                           comment: drift.Value(commentController.text),
-                          imageResDir: drift.Value("path/to/image/dir"),
+                          imageResDir: drift.Value(saveImagePath ?? "no-image"),
                         ),
                         domain,subTitleController.text);
 
@@ -261,6 +271,59 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
               ),
             ],
           );
+  }
+
+  Future<String?> _captureAndSave() async {
+    try {
+      // 権限確認（Android用）
+      if (Platform.isAndroid) {
+        final status = await Permission.storage.request();
+        if (!status.isGranted) {
+          print("ストレージ権限が拒否されました");
+          return null;
+        }
+      }
+
+      // Flutterウィジェットを画像として取得
+      final context = _globalKey.currentContext;
+      if (context == null) {
+        print("contextが取得できませんでした");
+        return null;
+      }
+
+      final renderObject = context.findRenderObject();
+      if (renderObject is! RenderRepaintBoundary) {
+        print("RenderObjectがRepaintBoundaryではありません");
+        return null;
+      }
+
+      final boundary = renderObject;
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) {
+        print("画像のバイト変換に失敗しました");
+        return null;
+      }
+
+      final pngBytes = byteData.buffer.asUint8List();
+
+      // 内部ストレージへ保存
+      final baseDir = await getApplicationDocumentsDirectory();
+      final targetDir = Directory('${baseDir.path}/webview_captures');//ここで任意のフォルダを作成
+      if (!await targetDir.exists()) {
+        await targetDir.create(recursive: true);
+      }
+      final timestamp=getTimeStamp();
+      final filePath = '${targetDir.path}/$timestamp.png';
+      final file = File(filePath);
+      await file.writeAsBytes(pngBytes);
+
+      print("保存完了: $filePath");
+      return filePath;
+    } catch (e) {
+      print("保存エラー: $e");
+      return null;
+    }
   }
 
   //与えられたURLからドメイン部を抜き出す関数

@@ -58,3 +58,8 @@ void showDeleteDialog(BuildContext context,String title ,String message ,VoidCal
     ),
   );
 }
+
+//必ずユニークになるタイムスタンプを返す。例(20250504T173510115282)
+String getTimeStamp(){
+  return DateTime.now().toIso8601String().replaceAll(":", "").replaceAll(".", "");
+}
