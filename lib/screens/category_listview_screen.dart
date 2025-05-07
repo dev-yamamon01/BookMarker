@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:bookmarker/data/models/tables.dart';
 import 'package:bookmarker/data/database.dart';
@@ -13,8 +15,13 @@ class CategoryListView extends StatelessWidget {
         itemCount: urls?.length,
         itemBuilder: (context,index){
           return ListTile(
-              leading: Image.network('https://asset.watch.impress.co.jp/img/car/docs/1436/350/001_o.jpg'), // 共通のアイコン
-              title: Text(urls?[index].title?? "", style: TextStyle(fontSize: 18)),
+              //leading: Image.network('https://asset.watch.impress.co.jp/img/car/docs/1436/350/001_o.jpg'),
+            leading: SizedBox(
+              width: 120,
+              height: 80,
+              child: Image.file(File(urls?[index].imageResDir ?? "")),
+            ),
+            title: Text(urls?[index].title?? "", style: TextStyle(fontSize: 18)),
               subtitle:
               Container(child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start, // 左揃え

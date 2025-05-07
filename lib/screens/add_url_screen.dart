@@ -283,8 +283,7 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
           return null;
         }
       }
-
-      // Flutterウィジェットを画像として取得
+      //Flutterウィジェットを画像として取得
       final context = _globalKey.currentContext;
       if (context == null) {
         print("contextが取得できませんでした");
