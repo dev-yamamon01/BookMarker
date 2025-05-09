@@ -16,11 +16,11 @@ class CategoryListView extends StatelessWidget {
         itemBuilder: (context,index){
           return ListTile(
               //leading: Image.network('https://asset.watch.impress.co.jp/img/car/docs/1436/350/001_o.jpg'),
-            leading: SizedBox(
-              width: 120,
-              height: 80,
+            leading: Expanded(
+                child:AspectRatio(
+              aspectRatio: 16 / 9,
               child: Image.file(File(urls?[index].imageResDir ?? "")),
-            ),
+            )),
             title: Text(urls?[index].title?? "", style: TextStyle(fontSize: 18)),
               subtitle:
               Container(child: Column(

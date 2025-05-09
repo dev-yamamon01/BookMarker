@@ -190,14 +190,14 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                   controller: commentController,
                   decoration: InputDecoration(hintText: "コメントを追加"),
                 ),
-                Expanded(
+        AspectRatio(
+          aspectRatio: 16 / 9,
             child: isValidUrl
                 ? InAppWebView(
-                    initialUrlRequest: URLRequest(url: WebUri("https://")),
-                    onWebViewCreated: (controller) {
-                      _webViewController = controller;
-                    },
-                  )
+                      initialUrlRequest: URLRequest(url: WebUri("https://")),
+                      onWebViewCreated: (controller) {
+                        _webViewController = controller;
+                      })
                 : Center(
                     child: Text("無効なURLです"),
                   ),
