@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:bookmarker/data/models/tables.dart';
 import 'package:bookmarker/data/database.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
+
+import '../utils/my_utils.dart';
 
 class CategoryListView extends StatelessWidget {
   final List<Url>? urls;
@@ -54,7 +57,16 @@ class CategoryListView extends StatelessWidget {
                       width: 20, // 横幅を制限
                       height: 20, // 高さを制限
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+
+                          //クリップボードへのコピー
+                          final accessUrl=await getAccessUrl(urls?[index].domainId ?? 0, urls?[index].directory ?? "");
+                          Clipboard.setData(ClipboardData(text: accessUrl ?? ""));
+
+                          //トーストメッセージ表示
+                          showToastMessage(context,"クリップボードへコピーしました");
+
+                        },
                         icon: Icon(Icons.copy_sharp),
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints(),
