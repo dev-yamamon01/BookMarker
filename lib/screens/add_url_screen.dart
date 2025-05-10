@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 // Import for Android features.
 import 'package:webview_flutter_android/webview_flutter_android.dart';
@@ -30,8 +31,7 @@ class AddUrlScreen extends StatefulWidget {
 }
 
 class _AddUrlScreenState extends State<AddUrlScreen> {
-
-  final GlobalKey _globalKey = GlobalKey();
+  InAppWebViewController? _webViewController;
 
   TextEditingController urlController = TextEditingController();
   TextEditingController commentController = TextEditingController();
@@ -49,44 +49,18 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
   @override
   void initState() {
     super.initState();
-    //url = "https://qiita.com/allJokin/items/35a486c82815e0070f34";
-    //WebViewPlatform=SurfaceAndroidWebView();
-    //webViewController = WebViewController()
-    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    //   ..setNavigationDelegate(
-    //     NavigationDelegate(
-    //       onProgress: (int progress) {
-    //         // Update loading bar.
-    //       },
-    //       onPageStarted: (String url) {},
-    //       onPageFinished: (String url) {},
-    //       onHttpError: (HttpResponseError error) {},
-    //       onWebResourceError: (WebResourceError error) {},
-    //       onNavigationRequest: (NavigationRequest request) {
-    //         if (request.url.startsWith('https://www.youtube.com/')) {
-    //           return NavigationDecision.prevent;
-    //         }
-    //         return NavigationDecision.navigate;
-    //       },
-    //     ),
-    //   )
-    //   ..loadRequest(Uri.parse('https://flutter.dev'));
-      // ..setNavigationDelegate(NavigationDelegate(
-      //   onPageStarted: (String url) {
-      //     print("ページ読み込み開始: $url");
-      //   },
-      //   onPageFinished: (String url) {
-      //     print("ページ読み込み完了: $url");
-      //   },
-      // ))
-      // ..loadRequest(Uri.parse(inputUrl));
 
     loadGenre();
 
-    //selectedGenre=genreItems.first;//ドロップダウンのデフォルト値をここで設定
       urlController.addListener(() {
+
         // TextFieldの文字が変わったタイミングでWebViewを再読み込み
-        //webViewController.reload(); // reload メソッドを呼び出す
+        final text = urlController.text;
+        if (_webViewController != null && text.isNotEmpty) {
+          _webViewController?.loadUrl(
+            urlRequest: URLRequest(url: WebUri(text)),
+          );
+        }
 
         setState(() {
           url=urlController.text;
@@ -216,22 +190,18 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                   controller: commentController,
                   decoration: InputDecoration(hintText: "コメントを追加"),
                 ),
-                 Expanded(
-              //child: Image.network('https://salop.co.jp/wp-content/uploads/2021/04/flutter-logo-sharing.png'),
-              child: isValidUrl
-                  ?
-              RepaintBoundary(
-                  key: _globalKey,
-                  child: WebViewWidget(
-                      controller: WebViewController()
-                        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                        ..loadRequest(Uri.parse(urlController.text)), // URL読み込み
-                    )
-              )
-                  : Center(
-                      child: Text("無効なURLです"),
-                    ),
-            ),
+        AspectRatio(
+          aspectRatio: 16 / 9,
+            child: isValidUrl
+                ? InAppWebView(
+                      initialUrlRequest: URLRequest(url: WebUri("https://")),
+                      onWebViewCreated: (controller) {
+                        _webViewController = controller;
+                      })
+                : Center(
+                    child: Text("無効なURLです"),
+                  ),
+          ),
         ],
             )
 
@@ -283,28 +253,15 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
           return null;
         }
       }
-      //Flutterウィジェットを画像として取得
-      final context = _globalKey.currentContext;
-      if (context == null) {
-        print("contextが取得できませんでした");
+
+      // WebViewのスクリーンショット取得
+      final Uint8List? screenshot =
+      await _webViewController?.takeScreenshot();
+
+      if (screenshot == null) {
+        print("スクリーンショットが取得できませんでした");
         return null;
       }
-
-      final renderObject = context.findRenderObject();
-      if (renderObject is! RenderRepaintBoundary) {
-        print("RenderObjectがRepaintBoundaryではありません");
-        return null;
-      }
-
-      final boundary = renderObject;
-      final image = await boundary.toImage(pixelRatio: 3.0);
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (byteData == null) {
-        print("画像のバイト変換に失敗しました");
-        return null;
-      }
-
-      final pngBytes = byteData.buffer.asUint8List();
 
       // 内部ストレージへ保存
       final baseDir = await getApplicationDocumentsDirectory();
@@ -315,7 +272,7 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
       final timestamp=getTimeStamp();
       final filePath = '${targetDir.path}/$timestamp.png';
       final file = File(filePath);
-      await file.writeAsBytes(pngBytes);
+      await file.writeAsBytes(screenshot);
 
       print("保存完了: $filePath");
       return filePath;
