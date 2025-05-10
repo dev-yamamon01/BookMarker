@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:bookmarker/data/models/tables.dart';
 import 'package:bookmarker/data/database.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
-
 import '../utils/my_utils.dart';
+import 'package:bookmarker/components/my_modal_bottom_sheet.dart';
 
 class CategoryListView extends StatelessWidget {
   final List<Url>? urls;
@@ -75,8 +74,16 @@ class CategoryListView extends StatelessWidget {
                       width: 20, // 横幅を制限
                       height: 20, // 高さを制限
                       child: IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.more_vert),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return MyModalBottomSheet(
+                                  title: urls?[index].title,
+                                  urlId: urls?[index].id);
+                            });
+                      },
+                      icon: Icon(Icons.more_vert),
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints(),
                       )),
@@ -92,6 +99,8 @@ class CategoryListView extends StatelessWidget {
         }
     );
   }
+
+
 
   void openBrowser(int domainId,String directory)async{
     final accessUrl=await getAccessUrl(domainId, directory);
