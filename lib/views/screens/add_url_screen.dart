@@ -14,10 +14,9 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Import for iOS/macOS features.
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
-import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/data/services/database.dart';
 import 'package:bookmarker/main.dart';
 import 'package:drift/drift.dart' as drift;
-
 import 'package:permission_handler/permission_handler.dart';
 
 //グローバルにデータベースインスタンスを作成

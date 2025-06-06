@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:drift/drift.dart' as drift;
-import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/data/services/database.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 

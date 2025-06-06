@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:bookmarker/main.dart';
-import 'package:bookmarker/screens/genre_edit_screen.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bookmarker/screens/add_genre_screen.dart';
+import 'package:bookmarker/views/screens/add_genre_screen.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 

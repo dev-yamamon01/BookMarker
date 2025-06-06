@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bookmarker/main.dart';
-import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/data/services/database.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';

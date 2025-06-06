@@ -1,17 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bookmarker/main.dart';
-import 'package:bookmarker/screens/genre_edit_screen.dart';
+import 'package:bookmarker/views/screens/genre_edit_screen.dart';
+import 'package:bookmarker/views/screens/home_screen.dart';
 
 final GoRouter router = GoRouter(
+  initialLocation: AppRoutes.home,
   routes: [
     GoRoute(
-      path: '/',
+      name: 'home',
+      path: AppRoutes.home,
       builder: (context, state) => const MyHomePage(title: 'Book Maker'),
     ),
     GoRoute(
-      path: '/genreEdit',
+      name: 'genreEdit',
+      path: AppRoutes.genreEdit,
       builder: (context, state) => const GenreEditScreen(),
     ),
   ],
 );
+
+class AppRoutes{
+  static String get home => '/';
+  static String get genreEdit => '/genreEdit';
+}

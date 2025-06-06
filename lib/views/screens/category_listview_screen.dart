@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:bookmarker/data/models/tables.dart';
-import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/data/services/database.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
-import '../utils/my_utils.dart';
-import 'package:bookmarker/components/my_modal_bottom_sheet.dart';
+import 'package:bookmarker/utils/my_utils.dart';
+import 'package:bookmarker/views/components/my_modal_bottom_sheet.dart';
 
 class CategoryListView extends StatelessWidget {
   final List<Url>? urls;

@@ -1,4 +1,4 @@
-import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/data/services/database.dart';
 
 class UrlsByGenreName {
   final String name;

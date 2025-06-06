@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/data/services/database.dart';
 import 'package:bookmarker/data/models/tables.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';

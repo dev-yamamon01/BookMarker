@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bookmarker/data/database.dart';
+import 'package:bookmarker/data/services/database.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 import 'package:bookmarker/data/models/urls_by_genre_name.dart';
 
