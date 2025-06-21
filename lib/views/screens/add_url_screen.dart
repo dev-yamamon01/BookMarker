@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -18,18 +18,20 @@ import 'package:bookmarker/data/services/database.dart';
 import 'package:bookmarker/main.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:bookmarker/view_models/genre/genre_view_model.dart';
+import 'package:bookmarker/view_models/url/url_view_model.dart';
 
 //グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
 
-class AddUrlScreen extends StatefulWidget {
+class AddUrlScreen extends ConsumerStatefulWidget {
   const AddUrlScreen({super.key});
 
   @override
-  State<AddUrlScreen> createState() => _AddUrlScreenState();
+  ConsumerState<AddUrlScreen> createState() => _AddUrlScreenState();
 }
 
-class _AddUrlScreenState extends State<AddUrlScreen> {
+class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
   InAppWebViewController? _webViewController;
 
   TextEditingController urlController = TextEditingController();
@@ -37,7 +39,8 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
   TextEditingController subTitleController = TextEditingController();
   TextEditingController titleController = TextEditingController();
 
-  String? url,domain,title,subTitle,dir,comment,selectedGenreName;
+  String? url,title,domain,subTitle,dir,comment,selectedGenreName;
+  // late String domain;
   int evaluation=0;
 
   List<String> genreItems = ['genre-1', 'genre-2', 'genre-3']; // 選択肢リスト
@@ -49,7 +52,7 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
   void initState() {
     super.initState();
 
-    loadGenre();
+    //loadGenre();
 
       urlController.addListener(() {
 
@@ -84,14 +87,13 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
     }
   }
 
-  Future<void>loadGenre()async{
-    genres=await getGenre();
-    setState(() {
-      selectedGenreName=genres?.first?.genreName ?? "";//ドロップダウンのデフォルト値をここで設定
-    });
-
-  }
-
+  // Future<void>loadGenre()async{
+  //   genres=await getGenre();
+  //   setState(() {
+  //     selectedGenreName=genres?.first?.genreName ?? "";//ドロップダウンのデフォルト値をここで設定
+  //   });
+  //
+  // }
   @override
   void dispose() {
     super.dispose();
@@ -101,6 +103,7 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
   @override
   Widget build(BuildContext context) {
     bool isValidUrl = checkInputUrl(urlController.text);
+    final genreState=ref.watch(genreViewModelProvider);
 
     return AlertDialog(
             title: Text("URLを新規追加"),
@@ -125,24 +128,30 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                 Row(
                   children: [
                     SizedBox(width: 100, child: Text("ジャンル："),),
-                    Expanded(child: DropdownButton<Genre>(
-                      value: selectedGenre,//選択された値
-                        hint: Text("ジャンルを選択"),
-                        items: genres.map((genre) {
-                          return DropdownMenuItem<Genre>(
-                            value: genre,
-                            child: Text(genre?.genreName ?? ""),
+                    genreState.when(
+                        data: (genres){
+                          return DropdownButton<Genre>(
+                            value: selectedGenre,//選択された値
+                            hint: Text("ジャンルを選択"),
+                            //TODO:ジャンルの状態管理をする
+                            items: genres?.map((genre) {
+                              return DropdownMenuItem<Genre>(
+                                value: genre,
+                                child: Text(genre.genreName ?? ""),
+                              );
+                            }).toList(),
+                            onChanged:(Genre? _selectedGenre){
+                              if(_selectedGenre!=null) {
+                                setState(() {
+                                  selectedGenre = _selectedGenre;
+                                });
+                              }}
                           );
-                        }).toList(),
-                        onChanged:(Genre? _selectedGenre){
-                        setState(() {
-                          //選択された値を保存する変数
-                          if(_selectedGenre!=null) {
-                            selectedGenre = _selectedGenre;
-                          }
-                        });
-                        }
-                    ))
+                        },
+                        loading: () => const CircularProgressIndicator(),
+                        error: (err, stack) => Text('エラー: $err'),
+
+                    )
                   ],
                 ),
                 Row(
@@ -212,8 +221,10 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                 child: Text("キャンセル"),
               ),
               TextButton(
-                onPressed:checkInputUrl(urlController.text)
-                ?() async {
+                onPressed:
+                checkInputUrl(urlController.text) &&
+                    selectedGenre!=null ?
+                () async {
                   //url = urlController.text;
                     //await _dbHelper.insertUrl(inputUrl); // DBへ登録
                     print("DB登録処理実行");
@@ -221,7 +232,8 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
 
                     final saveImagePath=await _captureAndSave();
 
-                    insertUrl(
+                    ref.read(urlViewModelProvider.notifier)
+                        .addUrl(
                         UrlsCompanion(
                           directory: drift.Value(dir ?? ""),
                           genreId: drift.Value(selectedGenre!.id),
@@ -230,7 +242,8 @@ class _AddUrlScreenState extends State<AddUrlScreen> {
                           comment: drift.Value(commentController.text),
                           imageResDir: drift.Value(saveImagePath ?? "no-image"),
                         ),
-                        domain,subTitleController.text);
+                        domain ?? "",
+                        subTitleController.text);
 
                     Navigator.pop(context); // ダイアログを閉じる
 

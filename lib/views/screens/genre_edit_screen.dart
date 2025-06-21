@@ -1,17 +1,20 @@
+import 'package:bookmarker/view_models/genre/genre_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:bookmarker/data/services/database.dart';
 import 'package:bookmarker/views/screens/update_genre_screen.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:bookmarker/utils/my_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 
 final AppDatabase db = AppDatabase();
 
-class GenreEditScreen extends StatelessWidget {
+class GenreEditScreen extends ConsumerWidget {
 
   const GenreEditScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: Text("ジャンル編集")),
       body: StreamBuilder<List<Genre>>(
@@ -58,7 +61,7 @@ class GenreEditScreen extends StatelessWidget {
                             showDeleteDialog(context, 'このジャンルを削除しますか？',
                                 '※削除したジャンルに該当するURLがある場合は自動的にジャンル未選択に変更されます',
                                 () async {
-                                  await deleteGenre(genre.id);
+                                  await ref.read(genreViewModelProvider.notifier).deleteGenre(genre.id);
                                   showToastMessage(context, '削除しました');
                             });
                           },

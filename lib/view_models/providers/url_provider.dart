@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
+
 import 'package:bookmarker/data/services/database.dart';
-import 'package:bookmarker/data/models/tables.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:bookmarker/data/models/urls_by_genre_name.dart';
+
+//-------------------------------------------------
+//このファイルはリファクタリングが完全に完了したら消す予定
+//-------------------------------------------------
 
 final urlMapProvider = StreamProvider<Map<int, UrlsByGenreName>>((ref) {
   final db = AppDatabase();
@@ -30,19 +33,4 @@ final urlMapProvider = StreamProvider<Map<int, UrlsByGenreName>>((ref) {
       return genreMap;
     },
   );
-
-  // combineLatestで両方が変わるたびに実行される
-  // await for (final _ in urlStream) {
-  //   final genres = await db.select(db.genres).get(); // genres再取得
-  //   final allUrls = await db.select(db.urls).get();
-  //
-  //   final Map<int, List<Url>> genreMap = {};
-  //   genreMap[0] = allUrls;
-  //
-  //   for (final genre in genres) {
-  //     genreMap[genre.id] = allUrls.where((url) => url.genreId == genre.id).toList();
-  //   }
-  //
-  //   yield genreMap;
-  // }
 });

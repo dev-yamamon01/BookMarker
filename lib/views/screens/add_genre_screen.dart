@@ -1,18 +1,20 @@
+import 'package:bookmarker/view_models/genre/genre_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:bookmarker/data/services/database.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:bookmarker/utils/my_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddGenreScreen extends StatefulWidget {
+class AddGenreScreen extends ConsumerStatefulWidget {
   const AddGenreScreen({super.key,required this.parentContext});
   final BuildContext parentContext;
 
   @override
-  State<AddGenreScreen> createState() => _AddGenreScreenState();
+  ConsumerState<AddGenreScreen> createState() => _AddGenreScreenState();
 }
 
-class _AddGenreScreenState extends State<AddGenreScreen> {
+class _AddGenreScreenState extends ConsumerState<AddGenreScreen> {
   TextEditingController genreController = TextEditingController();
 
   @override
@@ -41,7 +43,8 @@ class _AddGenreScreenState extends State<AddGenreScreen> {
         TextButton(//更新するボタン
           onPressed: () async{
 
-            await insertGenre(genreController.text);
+            //await insertGenre(genreController.text);
+            ref.read(genreViewModelProvider.notifier).addGenre(genreController.text);
             showToastMessage(widget.parentContext ,'追加しました');
             Navigator.pop(context);
 

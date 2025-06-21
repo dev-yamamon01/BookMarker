@@ -8,7 +8,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: 'home',
       path: AppRoutes.home,
-      builder: (context, state) => const MyHomePage(title: 'Book Maker'),
+      builder: (context, state) => const MyHomePage(title: 'Book Marker'),
     ),
     GoRoute(
       name: 'genreEdit',
