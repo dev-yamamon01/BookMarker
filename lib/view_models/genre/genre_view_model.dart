@@ -10,9 +10,9 @@ part 'genre_view_model.g.dart';
 class GenreViewModel extends _$GenreViewModel {
   late final AppDatabase _db;
   @override
-  Future<List<Genre>?> build() async {
-    _db = ref.read(databaseProvider);
-    return ref.watch(databaseProvider).select(_db.genres).get();//テーブルすべてのデータを状態監視
+  Stream<List<Genre>> build(){
+    _db=ref.watch(databaseProvider);
+    return _db.select(_db.genres).watch();
   }
 
   Future<void> addGenre(String inputGenreName) async {

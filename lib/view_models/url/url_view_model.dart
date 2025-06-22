@@ -13,9 +13,16 @@ class UrlViewModel extends _$UrlViewModel {
   late final AppDatabase _db;
 
   @override
-  Future<List<Url>?> build() async {
-    _db=ref.read(databaseProvider);
-    return ref.watch(databaseProvider).select(_db.urls).get();
+  Stream<List<Url>?> build(){
+    _db=ref.watch(databaseProvider);
+    return _db.select(_db.urls).watch();
+  }
+
+  Future<List<Url>> getUrl(int genreId) async{
+    final query =_db.select(_db.urls)..where((tbl) => tbl.genreId.equals(genreId));
+
+    final result = await query.get();
+    return result;
   }
 
   Future<void> addUrl(
