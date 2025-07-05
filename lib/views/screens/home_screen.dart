@@ -1,4 +1,5 @@
 import 'package:bookmarker/view_models/providers/url_by_genre.dart';
+import 'package:bookmarker/view_models/url/url_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bookmarker/views/components/my_drawer.dart';
@@ -8,6 +9,8 @@ import 'package:bookmarker/views/screens/category_listview_screen.dart';
 import 'package:bookmarker/views/screens/category_more_screen.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 import 'package:bookmarker/views/screens/add_url_screen.dart';
+
+import '../../utils/my_utils.dart';
 
 
 final GlobalKey<MyHomePageState> globalKey = GlobalKey<MyHomePageState>();
@@ -57,7 +60,6 @@ class MyHomePageState extends ConsumerState<MyHomePage> with TickerProviderState
           }
 
           final tabCount = genres.length + 2;
-          print('tabCount=$tabCount');
           _tabController = TabController(length: tabCount, vsync: this);
 
           return  MaterialApp(

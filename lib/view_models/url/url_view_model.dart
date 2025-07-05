@@ -6,6 +6,8 @@ import 'package:bookmarker/data/models/tables.dart';
 import 'package:drift/drift.dart';
 import 'package:bookmarker/view_models/domain/domain_view_model.dart';
 
+import '../../utils/my_utils.dart';
+
 part 'url_view_model.g.dart';
 
 @riverpod
@@ -76,8 +78,12 @@ class UrlViewModel extends _$UrlViewModel {
   }
 
   Future<void> deleteUrl(int id) async {
-    await (_db.delete(_db.urls)
-      ..where((tbl) => tbl.id.equals(id))).go();
+    try {
+      await (_db.delete(_db.urls)..where((tbl) => tbl.id.equals(id))).go();
+      showToast("削除しました");
+    } catch (e) {
+      showToast("エラー：$e");
+    }
   }
-
 }
+

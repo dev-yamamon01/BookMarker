@@ -45,7 +45,7 @@ class _AddGenreScreenState extends ConsumerState<AddGenreScreen> {
 
             //await insertGenre(genreController.text);
             ref.read(genreViewModelProvider.notifier).addGenre(genreController.text);
-            showToastMessage(widget.parentContext ,'追加しました');
+            showToastMessage(context: widget.parentContext ,message: '追加しました');
             Navigator.pop(context);
 
           },

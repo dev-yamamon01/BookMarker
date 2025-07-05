@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:bookmarker/main.dart';
 import 'package:bookmarker/utils/my_colors.dart';
+import 'package:bookmarker/main.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-void showToastMessage(BuildContext context, String message) {
-   ScaffoldMessenger.of(context).showSnackBar(
+void showToastMessage({required BuildContext context, required String message}) {
+  scaffoldMessengerKey.currentState?.showSnackBar(
     SnackBar(
       content: Text(
-          message,
-      style: TextStyle(
+        message,
+        style: TextStyle(
           color: MyColors.primary,
-      ),),
+        ),),
       duration: Duration(seconds: 2),
       backgroundColor: Colors.white,
       behavior: SnackBarBehavior.floating,
@@ -19,6 +21,34 @@ void showToastMessage(BuildContext context, String message) {
     ),
   );
 }
+
+void showToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.white,
+    textColor: MyColors.primary,
+  );
+}
+
+// void showToastMessage({required BuildContext context, required String message}) {
+//    ScaffoldMessenger.of(context).showSnackBar(
+//     SnackBar(
+//       content: Text(
+//           message,
+//       style: TextStyle(
+//           color: MyColors.primary,
+//       ),),
+//       duration: Duration(seconds: 2),
+//       backgroundColor: Colors.white,
+//       behavior: SnackBarBehavior.floating,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(12),
+//       ),
+//     ),
+//   );
+// }
 
 void showDeleteDialog(BuildContext context,String title ,String message ,VoidCallback onYes) {
   showDialog(

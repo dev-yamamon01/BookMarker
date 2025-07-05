@@ -1,15 +1,18 @@
+import 'package:bookmarker/utils/my_utils.dart';
+import 'package:bookmarker/view_models/url/url_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bookmarker/utils/my_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyModalBottomSheet extends StatelessWidget {
+class MyModalBottomSheet extends ConsumerWidget {
   final title;
   final urlId;
 
   const MyModalBottomSheet({super.key,required this.title,required this.urlId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -27,9 +30,9 @@ class MyModalBottomSheet extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.delete),
             title: Text("削除"),
-            onTap: () {
+            onTap: (){
               // 削除処理
-              print("$urlIdの削除");
+              ref.read(urlViewModelProvider.notifier).deleteUrl(urlId);
             },
           ),
         ],

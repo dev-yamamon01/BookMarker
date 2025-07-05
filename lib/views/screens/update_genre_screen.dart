@@ -49,7 +49,7 @@ class _UpdateGenreScreenState extends ConsumerState<UpdateGenreScreen> {
           TextButton(//更新するボタン
           onPressed: () async{
             await ref.read(genreViewModelProvider.notifier).updateGenre(widget.genre.id, genreController.text);
-            showToastMessage(context, '更新しました');
+            showToastMessage(context: context, message: '更新しました');
             Navigator.pop(context);
           },
           style: TextButton.styleFrom(

@@ -16,7 +16,7 @@ class MyDrawer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16.0)),
               child: Column(
                 children: [
-                  Text('Book Maker',
+                  Text('Book Marker',
                     style: TextStyle(
                         fontSize: 30,
                         color: MyColors.primary
@@ -26,18 +26,8 @@ class MyDrawer extends StatelessWidget {
               )
           ),
           ListTile(
-            leading: Icon(Icons.account_box),
-            title: Text("アカウント"),
-            onTap: () {},
-          ),
-          ListTile(
             leading: Icon(Icons.settings),
             title: Text("設定"),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Icon(Icons.menu_book_sharp),
-            title: Text("チュートリアル"),
             onTap: () {},
           ),
           ListTile(
@@ -47,7 +37,7 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.contact_support),
-            title: Text("Book Makerについて"),
+            title: Text("Book Markerについて"),
             onTap: () {},
           )
         ],

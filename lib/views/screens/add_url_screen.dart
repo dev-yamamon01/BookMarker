@@ -47,6 +47,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
   List<Genre?> genres=[];
   Genre? selectedGenre;
   late WebViewController webViewController;
+  bool isUrlReachable =false;
 
   @override
   void initState() {
@@ -58,10 +59,9 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
 
         // TextFieldの文字が変わったタイミングでWebViewを再読み込み
         final text = urlController.text;
-        if (_webViewController != null && text.isNotEmpty) {
-          _webViewController?.loadUrl(
-            urlRequest: URLRequest(url: WebUri(text)),
-          );
+        // if (_webViewController != null && text.isNotEmpty) {
+          if(text.isNotEmpty){
+          tryLoadUrl(text);
         }
 
         setState(() {
@@ -77,6 +77,29 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
 
   }
 
+  void tryLoadUrl(String url) async {
+    try {
+
+      final uri = Uri.parse(url);
+      final response = await HttpClient().headUrl(uri).then((req) => req.close());
+      if (response.statusCode == 200) {
+        isUrlReachable=true;
+          _webViewController?.loadUrl(
+            urlRequest: URLRequest(url: WebUri(url)),
+          );
+
+      } else {
+        isUrlReachable=false;
+        // 表示中止 or エラー通知
+        print('URL responded with ${response.statusCode}');
+      }
+    } catch (e) {
+      isUrlReachable =false;
+      print('URL error: $e');
+      // 通知やエラーダイアログを表示するなど
+    }
+  }
+
   //クリップボードにあるテキストを取得してurlControllerのtextとして表示
   Future<void> _pasteClipboardText() async {
     final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
@@ -87,13 +110,6 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
     }
   }
 
-  // Future<void>loadGenre()async{
-  //   genres=await getGenre();
-  //   setState(() {
-  //     selectedGenreName=genres?.first?.genreName ?? "";//ドロップダウンのデフォルト値をここで設定
-  //   });
-  //
-  // }
   @override
   void dispose() {
     super.dispose();
@@ -200,10 +216,11 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                 ),
         AspectRatio(
           aspectRatio: 16 / 9,
-            child: isValidUrl
+            child: isValidUrl && isUrlReachable
                 ? InAppWebView(
-                      initialUrlRequest: URLRequest(url: WebUri("https://")),
+                      initialUrlRequest: URLRequest(url: WebUri("about:blank")),
                       onWebViewCreated: (controller) {
+                        print('onWebViewCreated');
                         _webViewController = controller;
                       })
                 : Center(
