@@ -5,10 +5,18 @@ import 'package:bookmarker/data/services/database.dart';
 import 'package:bookmarker/data/models/tables.dart';
 import 'package:drift/drift.dart';
 import 'package:bookmarker/view_models/domain/domain_view_model.dart';
+import 'package:bookmarker/views/components/my_snack_bar.dart';
 
 import '../../utils/my_utils.dart';
 
 part 'url_view_model.g.dart';
+
+@riverpod
+Future<Url> urlById(UrlByIdRef ref, int id) async {
+  final viewModel = ref.read(urlViewModelProvider.notifier);
+  return viewModel.getUrlById(urlId: id);
+}
+
 
 @riverpod
 class UrlViewModel extends _$UrlViewModel {
@@ -18,6 +26,14 @@ class UrlViewModel extends _$UrlViewModel {
   Stream<List<Url>?> build(){
     _db=ref.watch(databaseProvider);
     return _db.select(_db.urls).watch();
+  }
+
+  Future<Url> getUrlById({required int urlId}) async {
+    final _db=ref.watch(databaseProvider);
+    final query = _db.select(_db.urls)..where((tbl) => tbl.id.equals(urlId));
+
+    final result = await query.getSingle();
+    return result;
   }
 
   Future<List<Url>> getUrl(int genreId) async{

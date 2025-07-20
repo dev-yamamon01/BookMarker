@@ -7,6 +7,12 @@ import 'package:drift/drift.dart';
 part 'domain_view_model.g.dart';
 
 @riverpod
+Future<Domain> domainById(DomainByIdRef ref, int id) async {
+  final viewModel = ref.read(domainViewModelProvider.notifier);
+  return viewModel.getDomainById(domainId: id);
+}
+
+@riverpod
 class DomainViewModel extends _$DomainViewModel {
   late final AppDatabase _db;
 
@@ -14,6 +20,14 @@ class DomainViewModel extends _$DomainViewModel {
   Future<List<Domain>?> build() async {
     _db = ref.read(databaseProvider);
     return ref.watch(databaseProvider).select(_db.domains).get();//ドメインテーブルすべてのデータを状態監視
+  }
+
+  Future<Domain> getDomainById({required int domainId}) async {
+    final _db=ref.watch(databaseProvider);
+    final query = _db.select(_db.domains)..where((tbl) => tbl.id.equals(domainId));
+
+    final result = await query.getSingle();
+    return result;
   }
 
   //追加した後にそのidを取得する必要がある(他のテーブルに挿入するため)

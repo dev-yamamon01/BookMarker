@@ -1,9 +1,11 @@
+import 'package:bookmarker/router.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:bookmarker/view_models/url/url_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class MyModalBottomSheet extends ConsumerWidget {
   final title;
@@ -25,6 +27,7 @@ class MyModalBottomSheet extends ConsumerWidget {
             onTap: () {
               // 編集処理
               print("$urlIdの編集");
+              context.push('${AppRoutes.editUrl}/$urlId');
             },
           ),
           ListTile(

@@ -1,3 +1,4 @@
+import 'package:bookmarker/views/screens/edit_url_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bookmarker/views/screens/genre_edit_screen.dart';
 import 'package:bookmarker/views/screens/home_screen.dart';
@@ -15,10 +16,19 @@ final GoRouter router = GoRouter(
       path: AppRoutes.genreEdit,
       builder: (context, state) => const GenreEditScreen(),
     ),
+    GoRoute(
+      name: 'editUrl',
+      path: '${AppRoutes.editUrl}/:urlId',
+      builder: (context, state) {
+        final urlId=state.pathParameters['urlId']!;
+        return EditUrlScreen(urlId: urlId);
+      },
+    ),
   ],
 );
 
 class AppRoutes{
   static String get home => '/';
   static String get genreEdit => '/genreEdit';
+  static String get editUrl => '/editUrl';
 }

@@ -21,6 +21,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:bookmarker/view_models/genre/genre_view_model.dart';
 import 'package:bookmarker/view_models/url/url_view_model.dart';
 
+
 //グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
 
@@ -53,23 +54,12 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
   void initState() {
     super.initState();
 
-    //loadGenre();
 
       urlController.addListener(() {
 
-        // TextFieldの文字が変わったタイミングでWebViewを再読み込み
         final text = urlController.text;
-        // if (_webViewController != null && text.isNotEmpty) {
-          if(text.isNotEmpty){
-          tryLoadUrl(text);
-        }
-
-        setState(() {
-          url=urlController.text;
-          domain=extractDomainAndDir(urlController.text).domain;
-          dir=extractDomainAndDir(urlController.text).dir;
-          //domainText=urlController.text;
-        });
+        domain=extractDomainAndDir(text).domain;
+        dir=extractDomainAndDir(text).dir;
 
     });
 
@@ -77,28 +67,6 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
 
   }
 
-  void tryLoadUrl(String url) async {
-    try {
-
-      final uri = Uri.parse(url);
-      final response = await HttpClient().headUrl(uri).then((req) => req.close());
-      if (response.statusCode == 200) {
-        isUrlReachable=true;
-          _webViewController?.loadUrl(
-            urlRequest: URLRequest(url: WebUri(url)),
-          );
-
-      } else {
-        isUrlReachable=false;
-        // 表示中止 or エラー通知
-        print('URL responded with ${response.statusCode}');
-      }
-    } catch (e) {
-      isUrlReachable =false;
-      print('URL error: $e');
-      // 通知やエラーダイアログを表示するなど
-    }
-  }
 
   //クリップボードにあるテキストを取得してurlControllerのtextとして表示
   Future<void> _pasteClipboardText() async {
@@ -132,6 +100,13 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                   controller: urlController,
                   decoration: InputDecoration(
                       hintText: "例: https://example.com"),
+                  onChanged: (value){
+                    if (_webViewController != null && value.isNotEmpty) {
+                      _webViewController!.loadUrl(
+                        urlRequest: URLRequest(url: WebUri(value.trim())),
+                      );
+                    }
+                  },
                 ),
                 Row(
                   children: [
@@ -149,7 +124,6 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                           return DropdownButton<Genre>(
                             value: selectedGenre,//選択された値
                             hint: Text("ジャンルを選択"),
-                            //TODO:ジャンルの状態管理をする
                             items: genres?.map((genre) {
                               return DropdownMenuItem<Genre>(
                                 value: genre,
@@ -216,16 +190,13 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                 ),
         AspectRatio(
           aspectRatio: 16 / 9,
-            child: isValidUrl && isUrlReachable
-                ? InAppWebView(
-                      initialUrlRequest: URLRequest(url: WebUri("about:blank")),
+            child: InAppWebView(
+                      initialUrlRequest: URLRequest(url: WebUri(urlController.text.trim())),
                       onWebViewCreated: (controller) {
-                        print('onWebViewCreated');
                         _webViewController = controller;
-                      })
-                : Center(
-                    child: Text("無効なURLです"),
-                  ),
+                      },
+                      onLoadStop: (controller, uri) {},
+                      )
           ),
         ],
             )

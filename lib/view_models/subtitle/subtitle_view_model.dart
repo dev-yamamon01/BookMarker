@@ -7,6 +7,12 @@ import 'package:drift/drift.dart';
 part 'subtitle_view_model.g.dart';
 
 @riverpod
+Future<String?> subtitleName(SubtitleNameRef ref, int id) async {
+  final viewModel = ref.read(subtitleViewModelProvider.notifier);
+  return viewModel.getSubtitleName(subtitleId: id);
+}
+
+@riverpod
 class SubtitleViewModel extends _$SubtitleViewModel {
   late final AppDatabase _db;
 
@@ -19,9 +25,9 @@ class SubtitleViewModel extends _$SubtitleViewModel {
   }
 
 
-  Future<String?> getSubtitleName(int subTitleId) async {
+  Future<String?> getSubtitleName({required int subtitleId}) async {
     final query = _db.select(_db.subTitles)
-      ..where((tbl) => tbl.id.equals(subTitleId));
+      ..where((tbl) => tbl.id.equals(subtitleId));
     final result = await query.getSingle();
 
     return result.subTitleName;

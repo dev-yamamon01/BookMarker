@@ -31,7 +31,7 @@ class CategoryListView extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start, // 左揃え
                 children: [
                     FutureBuilder<String?>(
-                        future: ref.read(subtitleViewModelProvider.notifier).getSubtitleName(urls?[index]?.subTitleId ?? 0),
+                        future: ref.read(subtitleViewModelProvider.notifier).getSubtitleName(subtitleId: urls?[index]?.subTitleId ?? 0),
                         // 非同期メソッドを呼び出す
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
