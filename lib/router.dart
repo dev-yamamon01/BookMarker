@@ -1,7 +1,9 @@
 import 'package:bookmarker/views/screens/edit_url_screen.dart';
+import 'package:bookmarker/views/screens/webview_screenshot_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bookmarker/views/screens/genre_edit_screen.dart';
 import 'package:bookmarker/views/screens/home_screen.dart';
+import 'dart:typed_data';
 
 final GoRouter router = GoRouter(
   initialLocation: AppRoutes.home,
@@ -22,6 +24,15 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final urlId=state.pathParameters['urlId']!;
         return EditUrlScreen(urlId: urlId);
+      },
+    ),
+    GoRoute(
+      name: 'webviewScreenshot',
+      path: '/webview/:url',
+      builder: (context, state) {
+        final rawUrl=state.pathParameters['url']!;
+        final decodedUrl = Uri.decodeComponent(rawUrl);
+        return WebViewScreenshotPage(url: decodedUrl);
       },
     ),
   ],

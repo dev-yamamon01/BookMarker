@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:bookmarker/data/services/database.dart';
 import 'package:bookmarker/view_models/domain/domain_view_model.dart';
 import 'package:bookmarker/view_models/subtitle/subtitle_view_model.dart';
@@ -7,8 +7,7 @@ import 'package:bookmarker/view_models/url/url_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bookmarker/data/models/urls_by_genre_name.dart';
-import 'package:bookmarker/data/models/tables.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../view_models/genre/genre_view_model.dart';
 import '../../view_models/url/url_view_model.dart';
@@ -36,10 +35,10 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
   bool _hasSetComment = false;
 
   Genre? selectedGenre;
+  Uint8List? cropImage;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -47,7 +46,6 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
   Widget build(BuildContext context) {
     final urlAsync = ref.watch(urlByIdProvider(int.parse(widget.urlId)));
     final genreState=ref.watch(genreViewModelProvider);
-
     String? url,title,domain,subTitle,dir,comment,selectedGenreName;
     int evaluation=0;
 
@@ -61,7 +59,6 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
                   final domainAsync=ref.watch(domainByIdProvider(url.domainId));
                   domainAsync.whenData((domain) {
                     if (!_hasSetUrl) {
-                      //TODO:ジャンルのプルダウンをgenreNameにする
                       urlController.text='https://${domain.domainName}${url.directory}';
                       _hasSetUrl= true;
                     }
@@ -78,7 +75,6 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
                   final genreAsync=ref.watch(genreByIdProvider(url.genreId));
                   genreAsync.whenData((genre) {
                     if (!_hasSetGenre) {
-                      //TODO:ジャンルのプルダウンをgenreNameにする
                       selectedGenre=genre;
                       _hasSetGenre= true;
                     }
@@ -98,11 +94,44 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
                       padding: EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        Image.file(
-                          File(url.imageResDir),
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.cover,
+                        Row(
+                          children: [
+                            Expanded(
+                                child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: (cropImage != null) ?
+                        Image.memory(
+                            cropImage!,
+                          fit: BoxFit.cover
+                        )
+                        : Image.file(
+                              File(url.imageResDir),
+                              fit: BoxFit.cover,
+                            ))),
+                            Column(
+                              children: [
+                                ElevatedButton.icon(
+                                    onPressed: () async {
+                                      final result = await context.push<Uint8List?>(
+                                        '/webview/${Uri.encodeComponent(urlController.text)}',
+                                      );
+                                      if (result != null) {
+                                        setState(() {
+                                          cropImage = result;
+                                        });
+                                      }
+                                    },
+                                    label: Icon(Icons.edit)
+                                ),
+                                SizedBox(height: 20),
+                                ElevatedButton.icon(
+                                    onPressed: (){},
+                                    label: Icon(Icons.image_not_supported_outlined)
+                                ),
+                              ],
+                            )
+
+                          ],
                         ),
                         SizedBox(height: 20),
                         TextField(
@@ -126,6 +155,9 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
                               hintText: "例: 花丸 一郎"),
                         ),
                         SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
                         genreState.when(
                         data: (genres){
                         return DropdownButton<Genre>(
@@ -148,7 +180,6 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
                           loading: () => const CircularProgressIndicator(),
                           error: (err, stack) => Text('エラー: $err'),
                         ),
-                        SizedBox(height: 20),
                         RatingBar.builder(
                             initialRating: url.evaluation.toDouble(),
                             minRating: 1,
@@ -164,7 +195,7 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
                               setState(() {
                                 evaluation = newRating.toInt();
                               });
-                            }),
+                            })]),
                         SizedBox(height: 20),
                         Row(
                           children: [
@@ -181,7 +212,9 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
                         SizedBox(height: 20),
                         TextField(
                           controller: commentController,
-                          decoration: InputDecoration(hintText: "コメントを追加"),
+                            decoration: InputDecoration(
+                                label: Text('コメント'),
+                                hintText: "例: 太郎くんに教えてもらった良いHP"),
                         ),
                         SizedBox(height: 40),
                         ElevatedButton(
