@@ -6,7 +6,7 @@ part of 'url_by_genre.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$urlByGenreHash() => r'54c0e232fb9b4c31e3dcb9c8808c8989ec0c2d8f';
+String _$urlByGenreHash() => r'55e5ba338505c2e113b2b77948c809f9f818bb88';
 
 /// See also [urlByGenre].
 @ProviderFor(urlByGenre)

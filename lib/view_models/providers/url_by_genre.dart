@@ -11,22 +11,22 @@ import 'package:bookmarker/view_models/genre/genre_view_model.dart';
 
 part 'url_by_genre.g.dart';
 
-  @riverpod
-  Future<(List<Genre>?, Map<int, UrlsByGenreName>?)> urlByGenre(UrlByGenreRef ref) async {
-    final genres = await ref.watch(genreViewModelProvider.future);
-    final urls = await ref.watch(urlViewModelProvider.future);
+@riverpod
+Future<(List<Genre>?, Map<int, UrlsByGenreName>?)> urlByGenre(UrlByGenreRef ref) async {
+  final genres = await ref.watch(genreViewModelProvider.future);
+  final urls = await ref.watch(urlViewModelProvider.future);
 
-    if(genres==null || urls==null){
-      return (null,null);
-    }
+  if (genres == null || urls == null) return (null, null);
 
-    final Map<int, UrlsByGenreName> urlsByGenreNameMap = {};
-    urlsByGenreNameMap[0]=UrlsByGenreName(name: "All", urls: urls);
-    for (final genre in genres) {
-      urlsByGenreNameMap[genre.id] = UrlsByGenreName(
-          name: genre.genreName,
-          urls: await ref.read(urlViewModelProvider.notifier).getUrl(genre.id));
-          }
+  final entries = await Future.wait(genres.map((genre) async {
+    final urlsById = await ref.read(urlViewModelProvider.notifier).getUrl(genre.id);
+    return MapEntry(genre.id, UrlsByGenreName(name: genre.genreName, urls: urlsById));
+  }));
 
-    return (genres, urlsByGenreNameMap); // Dart 3 record
-  }
+  final urlsByGenreNameMap = {
+    0: UrlsByGenreName(name: "All", urls: urls),
+    ...Map.fromEntries(entries),
+  };
+
+  return (genres, urlsByGenreNameMap);
+}

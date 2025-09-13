@@ -4,22 +4,22 @@ import 'package:bookmarker/utils/my_colors.dart';
 import 'package:bookmarker/main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-void showToastMessage({required BuildContext context, required String message}) {
+void showToastMessage({required String message}) {
   scaffoldMessengerKey.currentState?.showSnackBar(
-    SnackBar(
-      content: Text(
-        message,
-        style: TextStyle(
-          color: MyColors.primary,
-        ),),
-      duration: Duration(seconds: 2),
-      backgroundColor: Colors.white,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            color: MyColors.primary,
+          ),),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
-    ),
-  );
+    );
 }
 
 void showToast(String message) {

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:bookmarker/data/usecase/save_screenshot_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ import 'package:drift/drift.dart' as drift;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:bookmarker/view_models/genre/genre_view_model.dart';
 import 'package:bookmarker/view_models/url/url_view_model.dart';
+
+import '../../utils/url_utils.dart';
 
 
 //グローバルにデータベースインスタンスを作成
@@ -58,8 +61,8 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
       urlController.addListener(() {
 
         final text = urlController.text;
-        domain=extractDomainAndDir(text).domain;
-        dir=extractDomainAndDir(text).dir;
+        domain=UrlUtils.extractDomainAndDir(text).domain;
+        dir=UrlUtils.extractDomainAndDir(text).dir;
 
     });
 
@@ -86,7 +89,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isValidUrl = checkInputUrl(urlController.text);
+    bool isValidUrl = UrlUtils.checkInputUrl(urlController.text);
     final genreState=ref.watch(genreViewModelProvider);
 
     return AlertDialog(
@@ -191,13 +194,18 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
         AspectRatio(
           aspectRatio: 16 / 9,
             child: InAppWebView(
-                      initialUrlRequest: URLRequest(url: WebUri(urlController.text.trim())),
-                      onWebViewCreated: (controller) {
-                        _webViewController = controller;
-                      },
-                      onLoadStop: (controller, uri) {},
-                      )
-          ),
+                initialUrlRequest:
+                    URLRequest(url: WebUri(urlController.text.trim())),
+                initialSettings: InAppWebViewSettings(
+                  supportZoom: true, // Android ズーム許可
+                  useWideViewPort: true, // ページを縮小して表示可能に
+                  loadWithOverviewMode: true, // ページ全体を画面に収める
+                ),
+                onWebViewCreated: (controller) {
+                  _webViewController = controller;
+                },
+                onLoadStop: (controller, uri) {},
+              )),
         ],
             )
 
@@ -210,7 +218,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
               ),
               TextButton(
                 onPressed:
-                checkInputUrl(urlController.text) &&
+                UrlUtils.checkInputUrl(urlController.text) &&
                     selectedGenre!=null ?
                 () async {
                   //url = urlController.text;
@@ -220,7 +228,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
 
                     final saveImagePath=await _captureAndSave();
 
-                    ref.read(urlViewModelProvider.notifier)
+                    await ref.read(urlViewModelProvider.notifier)
                         .addUrl(
                         UrlsCompanion(
                           directory: drift.Value(dir ?? ""),
@@ -263,61 +271,17 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
         return null;
       }
 
-      // 内部ストレージへ保存
-      final baseDir = await getApplicationDocumentsDirectory();
-      final targetDir = Directory('${baseDir.path}/webview_captures');//ここで任意のフォルダを作成
-      if (!await targetDir.exists()) {
-        await targetDir.create(recursive: true);
-      }
-      final timestamp=getTimeStamp();
-      final filePath = '${targetDir.path}/$timestamp.png';
-      final file = File(filePath);
-      await file.writeAsBytes(screenshot);
+      return ref.read(saveScreenShotUsecaseProvider).execute(screenshot: screenshot);
 
-      print("保存完了: $filePath");
-      return filePath;
     } catch (e) {
-      print("保存エラー: $e");
+      print("_captureAndSave() エラー: $e");
       return null;
     }
   }
 
-  //与えられたURLからドメイン部を抜き出す関数
- DevidedUrl extractDomainAndDir(String url){
-    List<String> devided=url.split("/");//「/」で配列分け
-    //以下のRangeErrorの分岐処理
-    if(devided.length<=2){
-      //devidedが2要素数以下の場合は空文字を返す
-      return DevidedUrl("","");
-    }
-    String domainText=devided[2];//ドメイン部の抜き出し
-    String dirText=devided.sublist(3).join("/");//ディレクトリ部の抜き出し
-
-    DevidedUrl devidedUrl=DevidedUrl(domainText, dirText);//カスタムクラスに格納することでふたつの変数を返せるようにする
-
-    return devidedUrl;
-  }
-
-  //与えられた文字列がURLかどうか判定する関数
-  //「http://~」「https://~」をtrueとする
-  bool checkInputUrl(String url){
-
-    if(url.contains("http://") || url.contains("https://")){
-      return true;
-    }else{
-      return false;
-    }
-
-  }
-
 
 
 }
 
-class DevidedUrl {
-  final String domain;
-  final String dir;
 
-  DevidedUrl(this.domain, this.dir);
-}
 

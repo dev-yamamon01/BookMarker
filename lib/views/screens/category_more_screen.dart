@@ -39,18 +39,27 @@ class CategoryMoreScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       onPressed: () {
-        if (label == labelGenreAdd) {
-          showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AddGenreScreen(parentContext: context,);
-              });
-        } else if (label == labelGenreEdit) {
+        switch (label) {
+          case "ジャンル追加":
+            showDialog(
+                context: context,
+                builder: (BuildContext dialogContext) {
+                  return AddGenreScreen(parentContext: context,);
+                });
+            break;
+          case "ジャンル編集":
+            context.push('/genreEdit');
+            break;
+          case "ドメイン編集":
+            context.push('/editDomain');
+            break;
+          case "設定":
+            break;
 
-          context.push('/genreEdit');
-
-        } else if (label == labelDomainEdit) {
-        } else {}
+          default:
+          // その他の場合の処理
+            break;
+        }
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

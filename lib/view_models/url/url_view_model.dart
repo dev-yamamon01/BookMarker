@@ -1,3 +1,5 @@
+import 'package:bookmarker/data/usecase/check_domain_id_usecase.dart';
+import 'package:bookmarker/data/usecase/check_sub_title_id_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bookmarker/view_models/providers/database_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -48,47 +50,64 @@ class UrlViewModel extends _$UrlViewModel {
       String inputDomainName, //idを取得してからテーブル挿入するものは各変数渡す
       String inputSubTitleName) async {
 
+    try {
+      // トランザクションを使用して処理を一括管理
+      await _db.transaction(() async {
+        final domainId = await ref.read(checkDomainIdUsecaseProvider).execute(
+            domainName: inputDomainName);
+        final subTitleId = await ref
+            .read(checkSubTitleIdUsecaseProvider)
+            .execute(subTitle: inputSubTitleName);
+
+        // urlsテーブルに取得してきたdomainIdとsubTitleIdを添えて挿入
+        await _db.into(_db.urls).insert(UrlsCompanion(
+            domainId: Value(domainId),
+            directory: Value(url.directory.value ?? ""),
+            title: Value(url.title.value ?? ""),
+            subTitleId: Value(subTitleId),
+            genreId: Value(url.genreId.value),
+            evaluation: Value(url.evaluation.value ?? 0),
+            numOfViews: Value(0),
+            comment: Value(url.comment.value ?? ""),
+            imageResDir: Value(url.imageResDir.value ?? "")
+        ));
+      });
+      showToast('URLを追加しました');
+    }catch(e,_){
+      showToast('URL追加エラー：$e');
+    }
+
+  }
+
+  Future<void> updateUrl(
+      int urlId,
+      UrlsCompanion url, //フォームからテーブルへそのまま保存されるものはこれに格納
+      String inputDomainName, //idを取得してからテーブル挿入するものは各変数渡す
+      String inputSubTitleName) async {
+
     // トランザクションを使用して処理を一括管理
     await _db.transaction(() async {
-      // ① domainName がすでに存在するか確認
-      final domainId=await ref.read(domainViewModelProvider.notifier)
-          .checkExistDomain(inputDomainName)
-      //②　domainName がない場合は新たに追加する
-          //TODO:下記のinsertは何が返ってくる？？理想は追加したドメインidを代入したいんだけど
-      ?? await _db.into(_db.domains).insert(DomainsCompanion(
-          domainName: Value(inputDomainName ?? ""),
-        ));
 
+      final domainId = await ref.read(checkDomainIdUsecaseProvider).execute(domainName:inputDomainName);
+      final subTitleId = await ref.read(checkSubTitleIdUsecaseProvider).execute(subTitle: inputSubTitleName);
 
-      //subTitlesに挿入しようとしているサブタイトルがすでにあるか確認
-      final existingSubTitle = await (_db.select(_db.subTitles)
-        ..where((d) => d.subTitleName.equals(inputSubTitleName)))
-          .getSingleOrNull();
-
-      int subTitleId;
-
-      if (existingSubTitle != null) {
-        // 既存のドメインがある場合、そのIDを取得
-        subTitleId = existingSubTitle.id;
-      } else {
-        // ドメインがなければ新規追加し、IDを取得
-        subTitleId = await _db.into(_db.subTitles).insert(SubTitlesCompanion(
-          subTitleName: Value(inputSubTitleName),
-        ));
-      }
 
       // urlsテーブルに取得してきたdomainIdとsubTitleIdを添えて挿入
-      await _db.into(_db.urls).insert(UrlsCompanion(
-          domainId: Value(domainId),
-          directory: Value(url.directory.value ?? ""),
-          title: Value(url.title.value ?? ""),
-          subTitleId: Value(subTitleId),
-          genreId: Value(url.genreId.value),
-          evaluation: Value(url.evaluation.value ?? 0),
-          numOfViews: Value(0),
-          comment: Value(url.comment.value ?? ""),
-          imageResDir: Value(url.imageResDir.value ?? "")
-      ));
+       await (_db.update(_db.urls)
+        ..where((tbl) => tbl.id.equals(urlId))).write(
+           UrlsCompanion(
+               domainId: Value(domainId),
+               directory: Value(url.directory.value ?? ""),
+               title: Value(url.title.value ?? ""),
+               subTitleId: Value(subTitleId),
+               genreId: Value(url.genreId.value),
+               evaluation: Value(url.evaluation.value ?? 0),
+               numOfViews: Value(0),
+               comment: Value(url.comment.value ?? ""),
+               imageResDir: Value(url.imageResDir.value ?? "")
+           ),
+      );
+
     });
 
   }

@@ -66,7 +66,7 @@ class CategoryListView extends ConsumerWidget {
                           Clipboard.setData(ClipboardData(text: accessUrl ?? ""));
 
                           //トーストメッセージ表示
-                          showToastMessage(context: context, message: "クリップボードへコピーしました");
+                          showToastMessage(message: "クリップボードへコピーしました");
 
                         },
                         icon: Icon(Icons.copy_sharp),

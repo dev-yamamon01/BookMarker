@@ -1,15 +1,20 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:bookmarker/data/services/database.dart';
+import 'package:bookmarker/data/usecase/save_screenshot_usecase.dart';
+import 'package:bookmarker/utils/my_utils.dart';
 import 'package:bookmarker/view_models/domain/domain_view_model.dart';
 import 'package:bookmarker/view_models/subtitle/subtitle_view_model.dart';
 import 'package:bookmarker/view_models/url/url_view_model.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../utils/url_utils.dart';
 import '../../view_models/genre/genre_view_model.dart';
+import '../../view_models/providers/url_by_genre.dart';
 import '../../view_models/url/url_view_model.dart';
 
 class EditUrlScreen extends ConsumerStatefulWidget {
@@ -37,17 +42,26 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
   Genre? selectedGenre;
   Uint8List? cropImage;
 
+  String? url,title,domain,subTitle,dir,comment,selectedGenreName;
+  int evaluation=0;
+
   @override
   void initState() {
     super.initState();
+    urlController.addListener(() {
+
+      final text = urlController.text;
+      domain=UrlUtils.extractDomainAndDir(text).domain;
+      dir=UrlUtils.extractDomainAndDir(text).dir;
+
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final urlAsync = ref.watch(urlByIdProvider(int.parse(widget.urlId)));
     final genreState=ref.watch(genreViewModelProvider);
-    String? url,title,domain,subTitle,dir,comment,selectedGenreName;
-    int evaluation=0;
+
 
     return Scaffold(
         appBar: AppBar(title: Text('URLの編集')),
@@ -91,7 +105,7 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
 
 
                   return Padding(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(20),
                     child: Column(
                       children: [
                         Row(
@@ -218,8 +232,42 @@ class _EditUrlScreenState extends ConsumerState<EditUrlScreen> {
                         ),
                         SizedBox(height: 40),
                         ElevatedButton(
-                            onPressed: (){}, 
-                            child: Text('更新する'))
+                            child: Text('更新する'),
+                            onPressed: UrlUtils.checkInputUrl(
+                                urlController.text) &&
+                                selectedGenre != null ?
+                                () async {
+                              try {
+                                final saveImagePath = await ref.read(
+                                    saveScreenShotUsecaseProvider).execute(
+                                    screenshot: cropImage ??
+                                        UrlUtils.getTransparentImage());
+
+                                await ref.read(urlViewModelProvider.notifier)
+                                    .updateUrl(
+                                    int.parse(widget.urlId),
+                                    UrlsCompanion(
+                                      directory: drift.Value(dir ?? ""),
+                                      genreId: drift.Value(selectedGenre!.id),
+                                      title: drift.Value(titleController.text),
+                                      evaluation: drift.Value(evaluation),
+                                      comment: drift.Value(
+                                          commentController.text),
+                                      imageResDir: drift.Value(saveImagePath),
+                                    ),
+                                    domain ?? "",
+                                    subTitleController.text
+                                );
+
+                                showToast('更新完了');
+                                context.pop();
+
+                              } catch (e) {
+                                print('エラー: $e');
+                                showToastMessage(message: "更新エラー");
+                              }
+                            }: null
+                        )
                       ],
                     ),
                   );

@@ -62,7 +62,7 @@ class GenreEditScreen extends ConsumerWidget {
                                 '※削除したジャンルに該当するURLがある場合は自動的にジャンル未選択に変更されます',
                                 () async {
                                   await ref.read(genreViewModelProvider.notifier).deleteGenre(genre.id);
-                                  showToastMessage(context: context, message: '削除しました');
+                                  showToastMessage(message: '削除しました');
                             });
                           },
                           icon: Icon(Icons.delete),

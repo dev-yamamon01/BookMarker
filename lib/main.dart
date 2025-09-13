@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 //  グローバルにデータベースインスタンスを作成
 final AppDatabase database = AppDatabase();
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();  // Flutter の初期化を保証

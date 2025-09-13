@@ -21,7 +21,7 @@ class _WebViewScreenshotPageState extends State<WebViewScreenshotPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("16:9スクリーンショット")),
+      appBar: AppBar(title: Text(widget.url)),
       body: Stack(
         children: [
           Positioned.fill(

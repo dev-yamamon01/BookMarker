@@ -156,7 +156,7 @@ class _UrlByIdProviderElement extends AutoDisposeFutureProviderElement<Url>
   int get id => (origin as UrlByIdProvider).id;
 }
 
-String _$urlViewModelHash() => r'711984b80acee6dcc15079072bc6f698cc369b87';
+String _$urlViewModelHash() => r'8ec5d232a890bc65553b8a1d4514a4edaed8d8db';
 
 /// See also [UrlViewModel].
 @ProviderFor(UrlViewModel)

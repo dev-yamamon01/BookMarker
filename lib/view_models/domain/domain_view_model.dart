@@ -1,8 +1,11 @@
+import 'package:bookmarker/main.dart';
+import 'package:bookmarker/utils/my_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bookmarker/view_models/providers/database_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:bookmarker/data/services/database.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 
 part 'domain_view_model.g.dart';
 
@@ -34,6 +37,27 @@ class DomainViewModel extends _$DomainViewModel {
   Future<int> addDomain(String inputDomainName) async {
     return await _db.into(_db.domains).insert(
         DomainsCompanion(domainName: Value(inputDomainName)));
+  }
+
+  Future<void> updateDomain({required int domainId, required String newDomainName}) async {
+    //更新しようとしているドメインが他にないかを確認する
+    final isExistDomain = await checkExistDomain(newDomainName);
+    if(isExistDomain!=null) {//すでにそのドメインが保存されているとき
+      showToast("すでにそのドメイン名は登録されているため変更できません");
+      return;
+    }
+
+    await (_db.update(_db.domains)
+      ..where((tbl) => tbl.id.equals(domainId)))
+        .write(
+      DomainsCompanion(domainName: Value(newDomainName)),
+    );
+    showToast("ドメイン名の一括変更が完了しました");
+
+    final ctx = navigatorKey.currentContext;
+    if(ctx!=null) {
+      Navigator.pop(ctx);
+    }
   }
 
   //引数のドメイン名がすでにテーブルに存在するか確認
