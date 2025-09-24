@@ -52,7 +52,6 @@ class DomainViewModel extends _$DomainViewModel {
         .write(
       DomainsCompanion(domainName: Value(newDomainName)),
     );
-    showToast("ドメイン名の一括変更が完了しました");
 
     final ctx = navigatorKey.currentContext;
     if(ctx!=null) {

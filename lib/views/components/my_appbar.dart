@@ -35,10 +35,14 @@ class MyAppbar extends StatelessWidget {
               ),
             )
           ]),
-          IconButton(
-              onPressed: OnSecret,
-              icon:
-              SvgPicture.asset('assets/key.svg', width: 30, height: 30))
+          SizedBox(
+            width: 30,
+            height: 30,
+          )
+          // IconButton(
+          //     onPressed: OnSecret,
+          //     icon:
+          //     SvgPicture.asset('assets/key.svg', width: 30, height: 30))
         ],
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       ),

@@ -45,7 +45,7 @@ class CategoryListView extends ConsumerWidget {
                             return Text("No Data");
                           }
                         }),
-                    Text("アクセス数: ${urls?[index].numOfViews} 回"),
+                    //Text("アクセス数: ${urls?[index].numOfViews} 回"),
                     Text("コメント: ${urls?[index].comment}"),
                 ],
               ), alignment: Alignment.topLeft

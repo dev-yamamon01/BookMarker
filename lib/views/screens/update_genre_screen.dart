@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:bookmarker/data/services/database.dart';
-import 'package:bookmarker/utils/my_utils.dart';
-import 'package:bookmarker/utils/my_colors.dart';
 import 'package:bookmarker/view_models/genre/genre_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:bookmarker/views/components/my_input_dialog.dart';
 
 class UpdateGenreScreen extends ConsumerStatefulWidget {
   const UpdateGenreScreen({super.key,required this.genre});
@@ -25,45 +24,16 @@ class _UpdateGenreScreenState extends ConsumerState<UpdateGenreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-        title: Text("ジャンル名を編集"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: genreController,
-              decoration: InputDecoration(
-                  hintText: "例: ジャンルAAA",
-              ),
-            ),
-
-          ],
-        ),
-        actions: [
-          TextButton(//キャンセルボタン
-          onPressed: () => Navigator.pop(context), // キャンセル
-          style: TextButton.styleFrom(foregroundColor: Colors.grey), // ← 文字色
-          child: Text("キャンセル"),
-        ),
-
-          TextButton(//更新するボタン
-          onPressed: () async{
-            await ref.read(genreViewModelProvider.notifier).updateGenre(widget.genre.id, genreController.text);
-            showToastMessage(message: '更新しました');
-            Navigator.pop(context);
-          },
-          style: TextButton.styleFrom(
-            foregroundColor: MyColors.primary, // ← 文字色
-            side: BorderSide(color: MyColors.primary, width: 1), // ← 枠線
-            shape: RoundedRectangleBorder(
-              // ← 枠の角を丸く
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // ← 余白
-          ),
-          child: Text("更新する"),
-        ),
-      ],
+    return MyInputDialog(
+        textController: genreController,
+        inputTitle: 'ジャンル名を編集',
+        hintText: '例：金融ニュース',
+        positiveButtonText: '更新する',
+        successMessageText: 'ジャンル名を更新しました',
+        onPressed: () async{
+          await ref.read(genreViewModelProvider.notifier)
+              .updateGenre(widget.genre.id, genreController.text);
+        }
     );
   }
 }
