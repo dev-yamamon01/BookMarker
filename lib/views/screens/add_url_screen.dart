@@ -204,7 +204,12 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                 onWebViewCreated: (controller) {
                   _webViewController = controller;
                 },
-                onLoadStop: (controller, uri) {},
+                onLoadStop: (controller, uri) async{
+                  // ページを画面幅に合わせる
+                  await controller.evaluateJavascript(
+                    source: "document.querySelector('meta[name=viewport]')?.setAttribute('content', 'width=device-width, initial-scale=0.8');",
+                  );
+                },
               )),
         ],
             )
