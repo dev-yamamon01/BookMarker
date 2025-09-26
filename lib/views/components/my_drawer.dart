@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bookmarker/utils/my_colors.dart';
+import 'package:go_router/go_router.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -38,7 +39,9 @@ class MyDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.contact_support),
             title: Text("Book Markerについて"),
-            onTap: () {},
+            onTap: () {
+              context.pushNamed('aboutApp');
+            },
           )
         ],
       ),
