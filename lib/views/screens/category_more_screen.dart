@@ -5,13 +5,16 @@ import 'package:bookmarker/views/screens/add_genre_screen.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 
+enum MoreMenu {
+  genreAdd,
+  genreEdit,
+  domainEdit,
+  aboutApp,
+}
+
 //最後のタブのカテゴリー編集機能のUIを返す
 class CategoryMoreScreen extends StatelessWidget {
   const CategoryMoreScreen({super.key});
-  final String labelGenreAdd="ジャンル追加";
-  final String labelGenreEdit="ジャンル編集";
-  final String labelDomainEdit="ドメイン編集";
-  final String labelSetting="設定";
 
   @override
   Widget build(BuildContext context) {
@@ -21,17 +24,47 @@ class CategoryMoreScreen extends StatelessWidget {
         mainAxisSpacing: 20, // 縦方向の間隔
         crossAxisSpacing: 20, // 横方向の間隔
         children: [
-          _buildButton(Icon(Icons.add_circle_rounded,size: 40, color: Colors.white), labelGenreAdd,MyColors.secondary,context),
-          _buildButton(Icon(Icons.edit_note_sharp,size: 40, color: Colors.white), labelGenreEdit, MyColors.secondary,context),
-          _buildButton(SvgPicture.asset('assets/domain.svg',width: 40, height: 40), labelDomainEdit, MyColors.secondary,context),
-          _buildButton(Icon(Icons.settings,size: 40, color: Colors.white), labelSetting, MyColors.secondary,context),
+          _buildButton(
+              icon: Icon(Icons.add_circle_rounded,size: 40, color: Colors.white),
+              label: "ジャンル追加",
+              color: MyColors.secondary,
+              context: context,
+              moreMenu: MoreMenu.genreAdd
+          ),
+          _buildButton(
+              icon: Icon(Icons.edit_note_sharp,size: 40, color: Colors.white),
+              label: "ジャンル編集",
+              color: MyColors.secondary,
+              context: context,
+              moreMenu: MoreMenu.genreEdit
+          ),
+          _buildButton(
+              icon: SvgPicture.asset('assets/domain.svg',width: 40, height: 40),
+              label: "ドメイン編集",
+              color: MyColors.secondary,
+              context: context,
+              moreMenu: MoreMenu.domainEdit
+          ),
+          _buildButton(
+              icon: Icon(Icons.contact_support,size: 40, color: Colors.white),
+              label: "このアプリについて",
+              color: MyColors.secondary,
+              context: context,
+              moreMenu: MoreMenu.aboutApp
+          ),
         ],
       ),);
 
   }
 
   // ボタンウィジェットを生成するヘルパーメソッド
-  Widget _buildButton(Widget icon, String label, Color color, BuildContext context) {
+  Widget _buildButton({
+    required Widget icon,
+    required String label,
+    required Color color,
+    required BuildContext context,
+    required MoreMenu moreMenu
+  }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.all(16),
@@ -39,25 +72,22 @@ class CategoryMoreScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       onPressed: () {
-        switch (label) {
-          case "ジャンル追加":
+        switch (moreMenu) {
+          case MoreMenu.genreAdd:
             showDialog(
                 context: context,
                 builder: (BuildContext dialogContext) {
                   return AddGenreScreen(parentContext: context,);
                 });
             break;
-          case "ジャンル編集":
-            context.push('/genreEdit');
+          case MoreMenu.genreEdit:
+            context.pushNamed('genreEdit');
             break;
-          case "ドメイン編集":
-            context.push('/editDomain');
+          case MoreMenu.domainEdit:
+            context.pushNamed('editDomain');
             break;
-          case "設定":
-            break;
-
-          default:
-          // その他の場合の処理
+          case MoreMenu.aboutApp:
+            context.pushNamed('aboutApp');
             break;
         }
       },

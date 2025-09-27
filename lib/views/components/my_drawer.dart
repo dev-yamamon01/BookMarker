@@ -28,11 +28,11 @@ class MyDrawer extends StatelessWidget {
                   SvgPicture.asset('assets/bookmark.svg', width: 80, height: 80)],
               )
           ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text("設定"),
-            onTap: () {},
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.settings),
+          //   title: Text("設定"),
+          //   onTap: () {},
+          // ),
           ListTile(
             leading: Icon(Icons.question_answer_outlined),
             title: Text("問い合わせ"),
@@ -42,7 +42,7 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.contact_support),
-            title: Text("Book Markerについて"),
+            title: Text("このアプリについて"),
             onTap: () {
               context.pushNamed('aboutApp');
             },
