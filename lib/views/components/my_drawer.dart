@@ -1,7 +1,9 @@
+import 'package:bookmarker/views/components/webview_full_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bookmarker/views/components/webview_full_screen.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -34,7 +36,9 @@ class MyDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.question_answer_outlined),
             title: Text("問い合わせ"),
-            onTap: () {},
+            onTap: () {
+              context.pushNamed('contactUs');
+            },
           ),
           ListTile(
             leading: Icon(Icons.contact_support),

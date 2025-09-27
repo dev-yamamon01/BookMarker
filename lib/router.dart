@@ -8,6 +8,7 @@ import 'package:bookmarker/views/screens/edit_domain_screen.dart';
 import 'package:bookmarker/views/screens/about_app/about_app_screen.dart';
 import 'package:bookmarker/views/screens/about_app/privacy_policy_screen.dart';
 import 'package:bookmarker/views/screens/about_app/terms_screen.dart';
+import 'package:bookmarker/views/contact_us_screen.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: AppRoutes.home,
@@ -44,6 +45,11 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const TermsScreen(),
     ),
     GoRoute(
+      name: 'contactUs',
+      path: AppRoutes.contactUs,
+      builder: (context, state) => const ContactUsScreen(),
+    ),
+    GoRoute(
       name: 'editUrl',
       path: '${AppRoutes.editUrl}/:urlId',
       builder: (context, state) {
@@ -71,4 +77,5 @@ class AppRoutes{
   static String get aboutApp => '/aboutApp';
   static String get terms => '/terms';
   static String get privacyPolicy => '/privacyPolicy';
+  static String get contactUs => '/contactUs';
 }
