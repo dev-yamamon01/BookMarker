@@ -10,102 +10,153 @@ import 'package:bookmarker/views/components/my_modal_bottom_sheet.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
+// CategoryListView.dart
 class CategoryListView extends ConsumerWidget {
   final List<Url>? urls;
-  const CategoryListView({super.key,required this.urls});
+  const CategoryListView({super.key, required this.urls});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final list = urls ?? [];
+
+    // 空のときの表示（任意）
+    if (list.isEmpty) {
+      return const Center(child: Text('データがありません'));
+    }
+
+    // ListViewをそのまま返す（高さはTabBarViewが全画面にしてくれる）
     return ListView.builder(
-        itemCount: urls?.length,
-        itemBuilder: (context,index){
-          return ListTile(
-              //leading: Image.network('https://asset.watch.impress.co.jp/img/car/docs/1436/350/001_o.jpg'),
-            leading: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Image.file(File(urls?[index].imageResDir ?? "")),
-            ),
-            title: Text(urls?[index].title?? "", style: TextStyle(fontSize: 18)),
-              subtitle:
-              Container(child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // 左揃え
-                children: [
-                    FutureBuilder<String?>(
-                        future: ref.read(subtitleViewModelProvider.notifier).getSubtitleName(subtitleId: urls?[index]?.subTitleId ?? 0),
-                        // 非同期メソッドを呼び出す
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        final url = list[index];
+
+        return Container(
+          height: 130,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // 画像部分（左）
+              SizedBox(
+                width: 150,
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.file(
+                    File(url.imageResDir ?? ""),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.broken_image),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+
+              // 中央（タイトル・サブタイトル・コメント）
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    openBrowser(url.domainId, url.directory ?? "", ref);
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        url.title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      FutureBuilder<String?>(
+                        future: ref
+                            .read(subtitleViewModelProvider.notifier)
+                            .getSubtitleName(subtitleId: url.subTitleId ?? 0),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Text("Loading...");
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Text("Loading...", style: TextStyle(fontSize: 14));
                           } else if (snapshot.hasError) {
-                            return Text("Error: ${snapshot.error}");
+                            return Text(
+                              "Error: ${snapshot.error}",
+                              style: const TextStyle(fontSize: 14, color: Colors.red),
+                            );
                           } else if (snapshot.hasData) {
-                            return Text("名前: ${snapshot.data ?? ""}");
+                            return Text(
+                              snapshot.data ?? "",
+                              style: const TextStyle(fontSize: 14, color: Colors.black54),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            );
                           } else {
-                            return Text("No Data");
+                            return const Text(
+                              "No Data",
+                              style: TextStyle(fontSize: 14, color: Colors.black54),
+                            );
                           }
-                        }),
-                    //Text("アクセス数: ${urls?[index].numOfViews} 回"),
-                    Text("コメント: ${urls?[index].comment}"),
-                ],
-              ), alignment: Alignment.topLeft
-                ,),
-              trailing:
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                      width: 20, // 横幅を制限
-                      height: 20, // 高さを制限
-                      child: IconButton(
-                        onPressed: () async {
-
-                          //クリップボードへのコピー
-                          final accessUrl=await ref.read(domainViewModelProvider.notifier)
-                          .getAccessUrl(urls?[index].domainId ?? 0, urls?[index].directory ?? "");
-                          Clipboard.setData(ClipboardData(text: accessUrl ?? ""));
-
-                          //トーストメッセージ表示
-                          showToastMessage(message: "クリップボードへコピーしました");
-
                         },
-                        icon: Icon(Icons.copy_sharp),
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
-                      )),
-                  SizedBox(
-                      width: 20, // 横幅を制限
-                      height: 20, // 高さを制限
-                      child: IconButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return MyModalBottomSheet(
-                                  title: urls?[index].title,
-                                  urlId: urls?[index].id);
-                            });
-                      },
-                      icon: Icon(Icons.more_vert),
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
-                      )),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        url.comment ?? "",
+                        style: const TextStyle(fontSize: 13, color: Colors.black54),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 8),
+
+              // 右側（アイコン2つ）
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.copy_sharp),
+                    tooltip: 'URLをコピー',
+                    onPressed: () async {
+                      final accessUrl = await ref
+                          .read(domainViewModelProvider.notifier)
+                          .getAccessUrl(url.domainId ?? 0, url.directory ?? "");
+                      Clipboard.setData(ClipboardData(text: accessUrl ?? ""));
+                      showToastMessage(message: "クリップボードへコピーしました");
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    tooltip: '詳細',
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return MyModalBottomSheet(
+                            title: url.title,
+                            urlId: url.id,
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ],
               ),
-              onTap: (){
-                //ここでリンクにプライベートブラウザで飛んで、アクセス数更新する
-                openBrowser(urls![index].domainId,urls?[index].directory ?? "",ref);
-
-                }
-              ,
-          );
-        }
+            ],
+          ),
+        );
+      },
     );
   }
 
 
-
-  void openBrowser(int domainId,String directory,WidgetRef ref)async{
+void openBrowser(int domainId,String directory,WidgetRef ref)async{
 
     final accessUrl=await ref.read(domainViewModelProvider.notifier).getAccessUrl(domainId, directory);
     //final accessUrl=await getAccessUrl(domainId, directory);

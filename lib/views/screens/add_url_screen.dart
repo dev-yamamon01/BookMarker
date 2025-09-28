@@ -95,7 +95,9 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
     return AlertDialog(
             title: Text("URLを新規追加"),
             content: //ここに入力フォームを入れる
-            Column(
+            SingleChildScrollView(
+            child:
+             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -111,6 +113,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                     }
                   },
                 ),
+                SizedBox(height: 4),
                 Row(
                   children: [
                     SizedBox(width: 100, child: Text("ドメイン:"),),
@@ -157,6 +160,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                     ),)
                   ],
                 ),
+                SizedBox(height: 4),
                 Row(
                   children: [
                     SizedBox(width: 100, child: Text("サブタイトル(人物名など):"),),
@@ -166,6 +170,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                     ),)
                   ],
                 ),
+                SizedBox(height: 4),
                 Row(
                   children: [
                     SizedBox(width: 100, child: Text("評価:"),),
@@ -191,6 +196,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                   controller: commentController,
                   decoration: InputDecoration(hintText: "コメントを追加"),
                 ),
+                SizedBox(height: 8),
         AspectRatio(
           aspectRatio: 16 / 9,
             child: InAppWebView(
@@ -213,9 +219,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
               )),
         ],
             )
-
-
-            ,
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context), // キャンセル
