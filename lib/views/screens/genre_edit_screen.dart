@@ -5,6 +5,7 @@ import 'package:bookmarker/views/screens/update_genre_screen.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 final AppDatabase db = AppDatabase();
@@ -28,16 +29,17 @@ class GenreEditScreen extends ConsumerWidget {
 
           return ListView.builder(
             itemCount: genres.length,
+            padding: EdgeInsets.only(top: 10.h),
             itemBuilder: (context, index) {
               final genre = genres[index];
               return ListTile(
-                title: Text(genre.genreName),
+                title: Text(genre.genreName,style: TextStyle(fontSize: 15.sp),),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
-                        width: 20, // 横幅を制限
-                        height: 20, // 高さを制限
+                        width: 20.w, // 横幅を制限
+                        height: 20.h, // 高さを制限
                         child: IconButton(
                           onPressed: () {
                             showDialog(
@@ -48,14 +50,14 @@ class GenreEditScreen extends ConsumerWidget {
                                   );
                                 });
                           },
-                          icon: Icon(Icons.edit),
+                          icon: Icon(Icons.edit,size: 20.sp,),
                           padding: EdgeInsets.zero,
                         )
                     ),
-                    SizedBox(width: 15), //アイコン同士の間のスペース確保
+                    SizedBox(width: 15.w), //アイコン同士の間のスペース確保
                     SizedBox(
-                        width: 20, // 横幅を制限
-                        height: 20, // 高さを制限
+                        width: 20.w, // 横幅を制限
+                        height: 20.h, // 高さを制限
                         child: IconButton(
                           onPressed: () {
                             showDeleteDialog(context, 'このジャンルを削除しますか？',
@@ -65,7 +67,7 @@ class GenreEditScreen extends ConsumerWidget {
                                   showToastMessage(message: '削除しました');
                             });
                           },
-                          icon: Icon(Icons.delete),
+                          icon: Icon(Icons.delete,size: 20.sp,),
                           padding: EdgeInsets.zero,
                         )),
                   ],

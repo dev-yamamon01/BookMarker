@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:bookmarker/utils/my_colors.dart';
 import 'package:bookmarker/utils/my_utils.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 //入力されたtextが空かどうかを判定するためのprovider
 final inputTextProvider = StateProvider<String>((ref) => "");
@@ -38,6 +39,7 @@ class MyInputDialog extends ConsumerWidget {
         children: [
           TextField(
             controller: textController,
+            style: TextStyle(fontSize: 15.sp),
             decoration: InputDecoration(
               hintText: hintText,
             ),
@@ -54,7 +56,7 @@ class MyInputDialog extends ConsumerWidget {
         TextButton(//キャンセルボタン
           onPressed: () => Navigator.pop(context), // キャンセル
           style: TextButton.styleFrom(foregroundColor: Colors.grey), // ← 文字色
-          child: Text("キャンセル"),
+          child: Text("キャンセル",style: TextStyle(fontSize: 15.sp)),
         ),
 
         TextButton(//更新するボタン
@@ -72,14 +74,14 @@ class MyInputDialog extends ConsumerWidget {
           style: TextButton.styleFrom(
             foregroundColor: inputText.isEmpty ? Colors.grey : MyColors.primary, // ← 文字色
             side: BorderSide(
-                color: inputText.isEmpty? Colors.grey : MyColors.primary, width: 1), // ← 枠線
+                color: inputText.isEmpty? Colors.grey : MyColors.primary, width: 1.w), // ← 枠線
             shape: RoundedRectangleBorder(
               // ← 枠の角を丸く
               borderRadius: BorderRadius.circular(8),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // ← 余白
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h), // ← 余白
           ),
-          child: Text(positiveButtonText),
+          child: Text(positiveButtonText,style: TextStyle(fontSize: 15.sp)),
         ),
       ],
     );

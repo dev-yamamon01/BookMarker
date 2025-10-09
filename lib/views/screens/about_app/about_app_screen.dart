@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class AboutAppScreen extends StatelessWidget {
@@ -29,12 +30,12 @@ class AboutAppScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('このアプリについて')),
       body: ListView.separated(
         itemCount: items.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
+        separatorBuilder: (_, __) => Divider(height: 1.h),
         itemBuilder: (context, index) {
           final item = items[index];
           return ListTile(
-            title: Text(item['title']!),
-            trailing: const Icon(Icons.chevron_right),
+            title: Text(item['title']!,style: TextStyle(fontSize: 15.sp),),
+            trailing: Icon(Icons.chevron_right,size: 20.sp,),
             onTap: () {
               context.pushNamed(item['routeName']!);
             },

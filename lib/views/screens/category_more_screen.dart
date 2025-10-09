@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bookmarker/views/screens/add_genre_screen.dart';
@@ -18,35 +19,35 @@ class CategoryMoreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: EdgeInsets.all(16),
+    return Padding(padding: EdgeInsets.all(16.w),
       child: GridView.count(
         crossAxisCount: 2, // 2列
-        mainAxisSpacing: 20, // 縦方向の間隔
-        crossAxisSpacing: 20, // 横方向の間隔
+        mainAxisSpacing: 20.h, // 縦方向の間隔
+        crossAxisSpacing: 20.w, // 横方向の間隔
         children: [
           _buildButton(
-              icon: Icon(Icons.add_circle_rounded,size: 40, color: Colors.white),
+              icon: Icon(Icons.add_circle_rounded,size: 40.sp, color: Colors.white),
               label: "ジャンル追加",
               color: MyColors.secondary,
               context: context,
               moreMenu: MoreMenu.genreAdd
           ),
           _buildButton(
-              icon: Icon(Icons.edit_note_sharp,size: 40, color: Colors.white),
+              icon: Icon(Icons.edit_note_sharp,size: 40.sp, color: Colors.white),
               label: "ジャンル編集",
               color: MyColors.secondary,
               context: context,
               moreMenu: MoreMenu.genreEdit
           ),
           _buildButton(
-              icon: SvgPicture.asset('assets/domain.svg',width: 40, height: 40),
+              icon: SvgPicture.asset('assets/domain.svg',width: 40.w, height: 40.h),
               label: "ドメイン編集",
               color: MyColors.secondary,
               context: context,
               moreMenu: MoreMenu.domainEdit
           ),
           _buildButton(
-              icon: Icon(Icons.contact_support,size: 40, color: Colors.white),
+              icon: Icon(Icons.contact_support,size: 40.sp, color: Colors.white),
               label: "このアプリについて",
               color: MyColors.secondary,
               context: context,
@@ -96,7 +97,7 @@ class CategoryMoreScreen extends StatelessWidget {
         children: [
           icon,
           SizedBox(height: 8),
-          Text(label, style: TextStyle(fontSize: 20, color: Colors.white)),
+          Text(label, style: TextStyle(fontSize: 20.sp, color: Colors.white)),
         ],
       ),
     );

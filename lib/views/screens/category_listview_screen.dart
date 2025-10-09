@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:bookmarker/utils/my_utils.dart';
 import 'package:bookmarker/views/components/my_modal_bottom_sheet.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // CategoryListView.dart
 class CategoryListView extends ConsumerWidget {
@@ -21,24 +21,29 @@ class CategoryListView extends ConsumerWidget {
 
     // 空のときの表示（任意）
     if (list.isEmpty) {
-      return const Center(child: Text('データがありません'));
+      return Center(
+          child: Text(
+            '保存している内容がありません',
+            style: TextStyle(fontSize: 20.sp)
+          )
+      );
     }
 
     // ListViewをそのまま返す（高さはTabBarViewが全画面にしてくれる）
     return ListView.builder(
       itemCount: list.length,
+      padding: EdgeInsets.only(top: 3.h),
       itemBuilder: (context, index) {
         final url = list[index];
 
         return Container(
-          height: 130,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding:  EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // 画像部分（左）
               SizedBox(
-                width: 150,
+                width: 150.w,
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
                   child: Image.file(
@@ -47,13 +52,13 @@ class CategoryListView extends ConsumerWidget {
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: Colors.grey[300],
-                        child: const Icon(Icons.broken_image),
+                        child: Icon(Icons.broken_image),
                       );
                     },
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+               SizedBox(width: 8.w),
 
               // 中央（タイトル・サブタイトル・コメント）
               Expanded(
@@ -68,44 +73,44 @@ class CategoryListView extends ConsumerWidget {
                     children: [
                       Text(
                         url.title,
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: 18.sp,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2.h),
                       FutureBuilder<String?>(
                         future: ref
                             .read(subtitleViewModelProvider.notifier)
                             .getSubtitleName(subtitleId: url.subTitleId ?? 0),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Text("Loading...", style: TextStyle(fontSize: 14));
+                            return Text("Loading...", style: TextStyle(fontSize: 14.sp));
                           } else if (snapshot.hasError) {
                             return Text(
                               "Error: ${snapshot.error}",
-                              style: const TextStyle(fontSize: 14, color: Colors.red),
+                              style: TextStyle(fontSize: 14.sp, color: Colors.red),
                             );
                           } else if (snapshot.hasData) {
                             return Text(
                               snapshot.data ?? "",
-                              style: const TextStyle(fontSize: 14, color: Colors.black54),
+                              style: TextStyle(fontSize: 14.sp, color: Colors.black54),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             );
                           } else {
-                            return const Text(
+                            return Text(
                               "No Data",
-                              style: TextStyle(fontSize: 14, color: Colors.black54),
+                              style: TextStyle(fontSize: 14.sp, color: Colors.black54),
                             );
                           }
                         },
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2.h),
                       Text(
                         url.comment ?? "",
-                        style: const TextStyle(fontSize: 13, color: Colors.black54),
+                        style: TextStyle(fontSize: 13.sp, color: Colors.black54),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -114,14 +119,14 @@ class CategoryListView extends ConsumerWidget {
                 ),
               ),
 
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
 
               // 右側（アイコン2つ）
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.copy_sharp),
+                    icon: Icon(Icons.copy_sharp,size: 20.sp,),
                     tooltip: 'URLをコピー',
                     onPressed: () async {
                       final accessUrl = await ref
@@ -132,7 +137,7 @@ class CategoryListView extends ConsumerWidget {
                     },
                   ),
                   IconButton(
-                    icon: const Icon(Icons.more_vert),
+                    icon: Icon(Icons.more_vert,size: 20.sp,),
                     tooltip: '詳細',
                     onPressed: () {
                       showModalBottomSheet(

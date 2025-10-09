@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:bookmarker/utils/my_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 class MyAppbar extends StatelessWidget {
@@ -19,30 +20,27 @@ class MyAppbar extends StatelessWidget {
     return Center(
       child: Row(
         children: [
-          // IconButton(onPressed: (){}, icon: Icons.menu,color: Color(0xFFCC0000),),
           IconButton(
             onPressed: OnMenu,
             icon:
-            SvgPicture.asset('assets/menu.svg', width: 30, height: 30),
+            SvgPicture.asset('assets/menu.svg', width: 30.w, height: 30.h),
           ),
           Row(children: [
             SvgPicture.asset(
-                'assets/bookmark.svg', width: 30, height: 30),
+                'assets/bookmark.svg', width: 30.w, height: 30.h),
             Text('  '),
             Text(
               widgetTitle,
-              style: TextStyle(color: MyColors.primary
+              style: TextStyle(
+                  color: MyColors.primary,
+                fontSize: 15.sp
               ),
             )
           ]),
           SizedBox(
-            width: 30,
-            height: 30,
+            width: 30.w,
+            height: 30.h,
           )
-          // IconButton(
-          //     onPressed: OnSecret,
-          //     icon:
-          //     SvgPicture.asset('assets/key.svg', width: 30, height: 30))
         ],
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       ),

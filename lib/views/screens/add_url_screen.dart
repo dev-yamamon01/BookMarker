@@ -21,6 +21,7 @@ import 'package:drift/drift.dart' as drift;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:bookmarker/view_models/genre/genre_view_model.dart';
 import 'package:bookmarker/view_models/url/url_view_model.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../utils/url_utils.dart';
 
@@ -93,7 +94,10 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
     final genreState=ref.watch(genreViewModelProvider);
 
     return AlertDialog(
-            title: Text("URLを新規追加"),
+            title: Text(
+              "URLを新規追加",
+              style: TextStyle(fontSize: 15.sp)
+              ,),
             content: //ここに入力フォームを入れる
             SingleChildScrollView(
             child:
@@ -103,6 +107,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
               children: [
                 TextField(
                   controller: urlController,
+                  style: TextStyle(fontSize: 15.sp),
                   decoration: InputDecoration(
                       hintText: "例: https://example.com"),
                   onChanged: (value){
@@ -113,27 +118,27 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                     }
                   },
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Row(
                   children: [
-                    SizedBox(width: 100, child: Text("ドメイン:"),),
+                    SizedBox(width: 100.w, child: Text("ドメイン:",style: TextStyle(fontSize: 15.sp),),),
                     Expanded(child: Text(
-                        domain ?? ""
+                        domain ?? "",style: TextStyle(fontSize: 10.sp),
                     ))
                   ],
                 ),
                 Row(
                   children: [
-                    SizedBox(width: 100, child: Text("ジャンル："),),
+                    SizedBox(width: 100.w, child: Text("ジャンル：",style: TextStyle(fontSize: 15.sp)),),
                     genreState.when(
                         data: (genres){
                           return DropdownButton<Genre>(
                             value: selectedGenre,//選択された値
-                            hint: Text("ジャンルを選択"),
+                            hint: Text("ジャンルを選択",style: TextStyle(fontSize: 15.sp)),
                             items: genres?.map((genre) {
                               return DropdownMenuItem<Genre>(
                                 value: genre,
-                                child: Text(genre.genreName ?? ""),
+                                child: Text(genre.genreName ?? "",style: TextStyle(fontSize: 15.sp)),
                               );
                             }).toList(),
                             onChanged:(Genre? _selectedGenre){
@@ -145,45 +150,48 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                           );
                         },
                         loading: () => const CircularProgressIndicator(),
-                        error: (err, stack) => Text('エラー: $err'),
+                        error: (err, stack) => Text('エラー: $err',style: TextStyle(fontSize: 15.sp)),
 
                     )
                   ],
                 ),
                 Row(
                   children: [
-                    SizedBox(width: 100, child: Text("タイトル:"),),
+                    SizedBox(width: 100.w, child: Text("タイトル:",style: TextStyle(fontSize: 15.sp)),),
                     Expanded(child: TextField(
                       controller: titleController,
+                      style: TextStyle(fontSize: 15.sp),
                       decoration: InputDecoration(
                           hintText: "タイトルを入力"),
                     ),)
                   ],
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Row(
                   children: [
-                    SizedBox(width: 100, child: Text("サブタイトル(人物名など):"),),
+                    SizedBox(width: 100.w, child: Text("サブタイトル:",style: TextStyle(fontSize: 15.sp)),),
                     Expanded(child: TextField(
                       controller: subTitleController,
-                      decoration: InputDecoration(hintText: "サブタイトルを入力"),
+                      style: TextStyle(fontSize: 15.sp),
+                      decoration: InputDecoration(hintText: "サブタイトルを入力",),
                     ),)
                   ],
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Row(
                   children: [
-                    SizedBox(width: 100, child: Text("評価:"),),
+                    SizedBox(width: 100.w, child: Text("評価:",style: TextStyle(fontSize: 15.sp)),),
                     RatingBar.builder(
                       initialRating: 0.0,
                       minRating: 1,
-                      itemSize: 20, // 星のサイズ
+                      itemSize: 20.sp, // 星のサイズ
                       direction: Axis.horizontal,
                       allowHalfRating: false,
                       itemCount: 5, // 星の数
                       itemBuilder: (context, _) => Icon(
                       Icons.star,
                       color: Colors.amber,
+                        size: 20.sp,
                       ),
                       onRatingUpdate: (newRating) {
                         setState(() {
@@ -194,9 +202,10 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
                 ),
                 TextField(
                   controller: commentController,
+                  style: TextStyle(fontSize: 15.sp),
                   decoration: InputDecoration(hintText: "コメントを追加"),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 8.h),
         AspectRatio(
           aspectRatio: 16 / 9,
             child: InAppWebView(
@@ -223,7 +232,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context), // キャンセル
-                child: Text("キャンセル"),
+                child: Text("キャンセル",style: TextStyle(fontSize: 15.sp)),
               ),
               TextButton(
                 onPressed:
@@ -254,7 +263,7 @@ class _AddUrlScreenState extends ConsumerState<AddUrlScreen> {
 
 
                 }:null,
-                child: Text("登録"),
+                child: Text("登録",style: TextStyle(fontSize: 15.sp)),
               ),
             ],
           );
